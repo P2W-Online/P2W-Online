@@ -1,24 +1,44 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Main({ navigation }) {
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#b33939', '#4B0082']} // TAUSTA VÄRIN LAITTO GRADIENTILLA
+      style={styles.container}
+    >
       <Text style={styles.title}>P2W-Online</Text>
       
       <View style={styles.buttonContainer}>
+        {/* LOG IN NAPPI GRADIENTILLA */}
         <TouchableOpacity
-          style={styles.button}
           onPress={() => navigation.navigate('Login')}
+          style={{ width: '100%' }}
         >
-          <Text style={styles.buttonText}>Log in</Text>
+          <LinearGradient
+            colors={['#8A2BE2', '#DA70D6']}
+            start={[0, 0]}
+            end={[1, 1]}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Log in</Text>
+          </LinearGradient>
         </TouchableOpacity>
 
+        {/* SIGNIN NAPPI GRADIENTILLA */}
         <TouchableOpacity
-          style={styles.button}
           onPress={() => navigation.navigate('Sign')}
+          style={{ width: '100%' }}
         >
-          <Text style={styles.buttonText}>Sign Up</Text>
+          <LinearGradient
+            colors={['#8A2BE2', '#DA70D6']} 
+            start={[0, 0]}
+            end={[1, 1]}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </View>
 
@@ -26,7 +46,7 @@ export default function Main({ navigation }) {
         source={require('../assets/chestOpen1.png')}
         style={styles.image}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
