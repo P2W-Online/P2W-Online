@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     textShadowColor: '#000000', 
     textShadowOffset: { width: -4, height: 2 }, 
     textShadowRadius: 1, 
+    marginTop: -200,
   },
 
   buttonContainer: {
@@ -75,6 +76,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#d3d3d3',
     borderRadius: 10,
+    
   },
 
   button: {
@@ -96,7 +98,8 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    marginTop: 30,
+    position: 'absolute',
+    bottom: 20,         
     width: 150,
     height: 150,
     resizeMode: 'contain',
