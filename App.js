@@ -11,10 +11,10 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Main">
+      <Stack.Navigator initialRouteName="Main" >
         <Stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Sign" component={Sign} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} /> 
+        <Stack.Screen name="Sign" component={Sign}  options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
