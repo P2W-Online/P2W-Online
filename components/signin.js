@@ -26,7 +26,6 @@ export default function Main({ navigation }) {
           placeholder="Masi Pallopää"
           value={name}
           onChangeText={setName}
-          secureTextEntry={true}
         />
 
       <Text style={styles.label}>Email Address</Text>
@@ -35,7 +34,6 @@ export default function Main({ navigation }) {
           placeholder="masipallo@outlook.com"
           value={email}
           onChangeText={setEmail}
-          secureTextEntry={true}
         />
 
       <Text style={styles.label}>Create Username</Text>
@@ -44,7 +42,6 @@ export default function Main({ navigation }) {
           placeholder="MasiMasi12"
           value={username}
           onChangeText={setUsername}
-          secureTextEntry={true}
         />
 
       <Text style={styles.label}>Password</Text>
