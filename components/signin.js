@@ -11,7 +11,7 @@ export default function Main({ navigation }) {
   const [username, setUsername] = useState();
   const [password, setPassWord] = useState();
   const [verifyPassword, setVerifyPassword] = useState();
-
+ //TÄSSÄ TESTATAAN
   return (
     <LinearGradient
       colors={['#b33939', '#4B0082']} // TAUSTA VÄRIN LAITTO GRADIENTILLA
