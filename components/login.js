@@ -32,6 +32,7 @@ export default function Login({ navigation }) {
 
         <View style={styles.buttonContainer}>
           {/* SÄHKÖPOSTIN TEKSTIKENTTÄ */}
+          <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.input}
             placeholder="email"
@@ -43,6 +44,7 @@ export default function Login({ navigation }) {
           />
 
           {/* SALASANAN TEKSTIKENTTÄ*/}
+          <Text style={styles.label}>Password</Text>
           <TextInput
             style={styles.input}
             placeholder="Password"
@@ -110,10 +112,20 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 10,
     borderWidth: 1,
-    borderColor: '#d3d3d3',
+    borderColor: '#000000',
     borderRadius: 10,
     backgroundColor: '#ffffff',
     color: '#000000',
+  },
+
+  label: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textShadowColor: '#000000', 
+    textShadowOffset: { width: -4, height: 2 }, 
+    textShadowRadius: 1,
+    alignSelf: 'flex-start',
   },
 
   button: {
