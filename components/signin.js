@@ -1,10 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import {LinearGradient } from 'expo-linear-gradient';
 
-
-export default function Main({ navigation }) {
+export default function SignUp({ navigation }) {
 
   const [name, setName] = useState();
   const [email, setEmail] = useState();
@@ -13,6 +12,7 @@ export default function Main({ navigation }) {
   const [verifyPassword, setVerifyPassword] = useState();
  //TÄSSÄ TESTATAAN
   return (
+    <ScrollView>
     <LinearGradient
       colors={['#b33939', '#4B0082']} // TAUSTA VÄRIN LAITTO GRADIENTILLA
       style={styles.container}
@@ -84,6 +84,7 @@ export default function Main({ navigation }) {
         style={styles.image}
       />
     </LinearGradient>
+    </ScrollView>
   );
 }
 
