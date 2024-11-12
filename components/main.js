@@ -39,6 +39,20 @@ export default function Main({ navigation }) {
           >
             <Text style={styles.buttonText}>Sign Up</Text>
           </LinearGradient>
+        </TouchableOpacity>   
+
+      <TouchableOpacity
+          onPress={() => navigation.navigate('Scoreboard')}
+          style={{ width: '100%' }}
+        >
+          <LinearGradient
+            colors={['#8A2BE2', '#DA70D6']}
+            start={[0, 0]}
+            end={[1, 1]}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>View Scoreboard</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </View>
 
@@ -49,6 +63,7 @@ export default function Main({ navigation }) {
     </LinearGradient>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
