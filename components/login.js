@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { doSignInWithEmailAndPassword } from '../firebase/auth';
+import { AuthContext } from '../context/authContext';
 
 export default function Login({ navigation }) {
+  const { currentUser } = useContext(AuthContext)
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -21,6 +25,17 @@ export default function Login({ navigation }) {
       keyboardDidShowListener.remove();
     };
   }, []);
+
+  const handleLogin = async () => {
+    try{
+      await doSignInWithEmailAndPassword(email, password)
+      console.log("Signed in with user ", email)
+      navigation.navigate('Main')
+    } catch (error) {
+      console.error('Authentication error: ', error.message)
+    }
+    
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -55,7 +70,10 @@ export default function Login({ navigation }) {
           />
 
           {/* LOGIN NAPPI GRADIENTILLA */}
-          <TouchableOpacity style={{ width: '100%' }}>
+          <TouchableOpacity 
+            style={{ width: '100%' }}
+            onPress={handleLogin}
+          >
             <LinearGradient
               colors={['#8A2BE2', '#DA70D6']}
               start={[0, 0]}

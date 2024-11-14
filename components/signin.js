@@ -2,6 +2,8 @@ import React from 'react';
 import { useState } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import {LinearGradient } from 'expo-linear-gradient';
+import { doCreateUserWithEmailAndPassword } from '../firebase/auth';
+import { AuthContext } from '../context/authContext';
 
 export default function SignUp({ navigation }) {
 
@@ -10,7 +12,20 @@ export default function SignUp({ navigation }) {
   const [username, setUsername] = useState();
   const [password, setPassWord] = useState();
   const [verifyPassword, setVerifyPassword] = useState();
- //TÄSSÄ TESTATAAN
+
+  const handleSignUp = () => {
+    console.log("called signup function")
+    try{
+      doCreateUserWithEmailAndPassword(email, password)
+      console.log("User account created succesfully")
+      /* Käyttäjälle pitäisi kertoa jollain tavalla, että tili on luotu onnistuneesti, ja että sillä voi nyt kirjautua sisään */
+      navigation.navigate('Main')
+    } catch (error) {
+      console.error('Authentication error: ', error.message)
+    }
+    
+  }
+
   return (
     <ScrollView>
     <LinearGradient
@@ -65,7 +80,8 @@ export default function SignUp({ navigation }) {
        
         {/* CREATE ACCOUNT NAPPI GRADIENTILLA */}
         <TouchableOpacity
-          onPress={() => navigation.navigate('Login')}   /*Napin toimintoa vielä muokattava tarpeen mukaan*/
+          //onPress={() => navigation.navigate('Login')}   /*Napin toimintoa vielä muokattava tarpeen mukaan*/
+          onPress={handleSignUp}
           style={{ width: '100%'}}
         >
           <LinearGradient
