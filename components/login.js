@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { doSignInWithEmailAndPassword } from '../firebase/auth';
-import { AuthContext } from '../context/authContext';
+import { AuthContext } from '../context/authContext/authContext.js';
 
 export default function Login({ navigation }) {
-  const { currentUser } = useContext(AuthContext)
-
+  const { currentUser } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // KUUNTELIJAT NÄPPÄIMISTÖN KUUNTELEMISEEN (ilman tätä, arkun kuva hyppää tekstikenttien päälle.)
@@ -27,15 +27,40 @@ export default function Login({ navigation }) {
   }, []);
 
   const handleLogin = async () => {
-    try{
-      await doSignInWithEmailAndPassword(email, password)
-      console.log("Signed in with user ", email)
-      navigation.navigate('Main')
-    } catch (error) {
-      console.error('Authentication error: ', error.message)
+    // Tarkistetaan, että kaikki kentät on täytetty.
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
     }
-    
-  }
+
+    try {
+      setIsLoading(true);
+      await doSignInWithEmailAndPassword(email, password);
+      console.log("Signed in with user ", email);
+      navigation.navigate('Main');
+    } catch (error) {
+      console.error('Authentication error: ', error.message);
+      // virheilmotuksia
+      let errorMessage = 'Login failed. Please try again.';
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = 'No account found with this email.';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Incorrect password.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address.';
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many attempts. Please try again later.';
+      }
+
+      Alert.alert(
+        'Login Error',
+        errorMessage,
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -56,6 +81,7 @@ export default function Login({ navigation }) {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
+            editable={!isLoading}
           />
 
           {/* SALASANAN TEKSTIKENTTÄ*/}
@@ -67,20 +93,27 @@ export default function Login({ navigation }) {
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            editable={!isLoading}
           />
 
           {/* LOGIN NAPPI GRADIENTILLA */}
           <TouchableOpacity 
             style={{ width: '100%' }}
             onPress={handleLogin}
+            disabled={isLoading}
           >
             <LinearGradient
               colors={['#8A2BE2', '#DA70D6']}
               start={[0, 0]}
               end={[1, 1]}
-              style={styles.button}
+              style={[
+                styles.button,
+                isLoading && { opacity: 0.7 }
+              ]}
             >
-              <Text style={styles.buttonText}>Log in</Text>
+              <Text style={styles.buttonText}>
+                {isLoading ? 'Logging in...' : 'Log in'}
+              </Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>

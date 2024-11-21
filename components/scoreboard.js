@@ -1,46 +1,80 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { collection, onSnapshot, orderBy, limit, query } from 'firebase/firestore';
+import { firebase_db } from '../firebase/firebase';
 
 const Scoreboard = () => {
-    //Testi dataa
-  const users = [
-    { name: 'Player 1', score: 1234567 },
-    { name: 'Player 2', score: 987654 },
-    { name: 'Player 3', score: 854321 },
-    { name: 'Player 4', score: 721987 },
-    { name: 'Player 5', score: 659753 },
-    { name: 'Player 6', score: 653159 },
-    { name: 'Player 7', score: 556123 },
-    { name: 'Player 8', score: 452123 },
-    { name: 'Player 9', score: 321987 },
-    { name: 'Player 10', score: 256753 },
-  ];
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const top10Players = users.sort((a, b) => b.score - a.score).slice(0, 10);
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(collection(firebase_db, 'users'), orderBy('score', 'desc'), limit(10)),
+      (snapshot) => {
+        const scores = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setUsers(scores);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error('Error loading scores:', error);
+        setIsLoading(false);
+      }
+    );
+
+    return unsubscribe;
+  }, []);
+
+  const podiumPlayers = users.slice(0, 3);
+
   const podiumColors = [
-    ['#FFD700', '#DAA520'], // kulta
-    ['#87CEEB', '#4682B4'], // hopea
-    ['#CD7F32', '#8B4513'], // pronssi
+    ['#FFD700', '#DAA520'], // Gold
+    ['#87CEEB', '#4682B4'], // Silver
+    ['#CD7F32', '#8B4513'], // Bronze
   ];
 
-  const renderPodiumPlayer = (playerIndex, position) => (
-    <View style={styles.playerContainer}>
-      <LinearGradient
-        colors={podiumColors[position - 1]}
-        style={[
-          styles.playerCard,
-          position === 1 && styles.firstPlaceCard,
-          styles.bubbleEffect
-        ]}
-      >
-        <Image source={require('../assets/pfp.png')} style={styles.playerIcon} />
-        <Text style={styles.playerName}>{top10Players[playerIndex].name}</Text>
-        <Text style={styles.playerScore}>{position}</Text>
-        <Image source={require('../assets/medal.png')} style={styles.medalIcon} />
+  const renderPodiumPlayer = (playerIndex, position) => {
+    const player = podiumPlayers[playerIndex];
+    if (!player) return null;
+
+    return (
+      <View style={styles.playerContainer}>
+        <LinearGradient
+          colors={podiumColors[position - 1]}
+          style={[
+            styles.playerCard,
+            position === 1 && styles.firstPlaceCard,
+            styles.bubbleEffect,
+          ]}
+        >
+          <Image source={require('../assets/pfp.png')} style={styles.playerIcon} />
+          <Text style={styles.playerName}>{player.username}</Text>
+          <Text style={styles.playerScore}>{player.score.toLocaleString()}</Text>
+          <Image source={require('../assets/medal.png')} style={styles.medalIcon} />
+        </LinearGradient>
+      </View>
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <LinearGradient colors={['#b33939', '#4B0082']} style={[styles.container, styles.centerContent]}>
+        <ActivityIndicator size="large" color="#ffffff" />
+        <Text style={[styles.title, { marginTop: 20 }]}>Loading Scores...</Text>
       </LinearGradient>
-    </View>
-  );
+    );
+  }
+
+  if (users.length === 0) {
+    return (
+      <LinearGradient colors={['#b33939', '#4B0082']} style={[styles.container, styles.centerContent]}>
+        <Text style={styles.title}>No scores available</Text>
+      </LinearGradient>
+    );
+  }
 
   return (
     <LinearGradient colors={['#b33939', '#4B0082']} style={styles.container}>
@@ -50,27 +84,31 @@ const Scoreboard = () => {
           <Text style={styles.title}>Scoreboard</Text>
         </LinearGradient>
       </View>
-      
-      {/* Kolme parasta */}
+
+      {/* Podium */}
       <View style={styles.section}>
         <LinearGradient colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']} style={styles.sectionBg}>
           <View style={styles.podium}>
-            {renderPodiumPlayer(1, 2)}
-            {renderPodiumPlayer(0, 1)}
-            {renderPodiumPlayer(2, 3)}
+            {podiumPlayers.length >= 3 && (
+              <>
+                {renderPodiumPlayer(1, 2)}
+                {renderPodiumPlayer(0, 1)}
+                {renderPodiumPlayer(2, 3)}
+              </>
+            )}
           </View>
         </LinearGradient>
       </View>
-      
+
       {/* Scoreboard */}
       <View style={[styles.section, styles.scoreboardSection]}>
         <LinearGradient colors={['#FFB347', '#FFB347']} style={[styles.sectionBg, styles.scoreboard]}>
           <View style={styles.headerRow}>
             <Text style={styles.headerText}>Player</Text>
-            <Text style={styles.headerText}>Scores</Text>
+            <Text style={styles.headerText}>Score</Text>
           </View>
           <ScrollView>
-            {top10Players.map((user, index) => (
+            {users.slice(3).map((user, index) => (
               <View key={index} style={styles.scoreRow}>
                 <LinearGradient
                   colors={['#32CD32', '#28A428']}
@@ -80,7 +118,7 @@ const Scoreboard = () => {
                 >
                   <View style={styles.scoreContent}>
                     <Image source={require('../assets/pfp.png')} style={styles.playerIconSmall} />
-                    <Text style={styles.scoreText}>{user.name}</Text>
+                    <Text style={styles.scoreText}>{user.username}</Text>
                     <View style={styles.coin} />
                     <Text style={styles.scoreText}>{user.score.toLocaleString()}</Text>
                   </View>
@@ -209,10 +247,11 @@ const styles = StyleSheet.create({
     flex: 1,
     color: '#FFFFFF',
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
     textShadowColor: '#000000',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
+    opacity: (props) => props.isPlaceholder ? 0.7 : 1, // slightly dim the placeholder text
   },
   coin: {
     width: 20,

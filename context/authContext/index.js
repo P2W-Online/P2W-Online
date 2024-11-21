@@ -1,3 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { registerRootComponent } from 'expo';
+import App from '../../App';
 
-export const AuthContext = React.createContext();
+registerRootComponent(App);

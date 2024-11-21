@@ -1,15 +1,43 @@
 import React, { useContext }from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { AuthContext } from '../context/authContext';
+import { AuthContext } from '../context/authContext/authContext.js';
 import { doSignOut } from '../firebase/auth';
 
 export default function Main({ navigation }) {
-  const { userLoggedIn, currentUser } = useContext(AuthContext)
-  const logout = () => {
-    doSignOut()
-    navigation.navigate('Main')
+  const { userLoggedIn, currentUser } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
+
+  const logout = async () => {
+    try {
+      await doSignOut();
+      navigation.navigate('Main');
+    } catch (error) {
+      console.error('Logout error:', error);
+      Alert.alert(
+        'Logout Error',
+        'Failed to log out. Please try again.',
+        [{ text: 'OK' }]
+      );
+    }
   }
+
+  // email displaylle tyyliä
+  const emailContainerStyle = {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+  };
+
+  const emailTextStyle = {
+    color: '#ffffff',
+    fontSize: 16,
+    textAlign: 'center',
+    textShadowColor: '#000000',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 1,
+  };
+
   return (
     <LinearGradient
       colors={['#b33939', '#4B0082']} // TAUSTA VÄRIN LAITTO GRADIENTILLA
@@ -52,7 +80,13 @@ export default function Main({ navigation }) {
           </>
         ) : (
           <>
-          <Text>{currentUser.email}</Text>
+            {/* User email display with styling */}
+            <View style={emailContainerStyle}>
+              <Text style={emailTextStyle}>
+                Logged in as: {currentUser?.email}
+              </Text>
+            </View>
+
             <TouchableOpacity
               onPress={() => navigation.navigate('Scoreboard')}
               style={{ width: '100%' }}
@@ -66,6 +100,7 @@ export default function Main({ navigation }) {
                 <Text style={styles.buttonText}>View Scoreboard</Text>
               </LinearGradient>
             </TouchableOpacity>
+
             <TouchableOpacity
               onPress={logout}
               style={{ width: '100%' }}
@@ -90,7 +125,6 @@ export default function Main({ navigation }) {
     </LinearGradient>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -118,7 +152,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#d3d3d3',
     borderRadius: 10,
-
   },
 
   button: {

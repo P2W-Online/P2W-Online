@@ -1,15 +1,39 @@
-import { firebase_auth } from "./firebase"
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "@firebase/auth"
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from '@firebase/auth';
+import { firebase_auth, firebase_db } from './firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
+export const doSignInWithEmailAndPassword = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(firebase_auth, email, password);
+    return userCredential.user;
+  } catch (error) {
+    throw error;
+  }
+};
 
-export const doCreateUserWithEmailAndPassword = async (email, password) => {
-    return createUserWithEmailAndPassword(firebase_auth, email, password)
-}
+export const doCreateUserWithEmailAndPassword = async (name, email, username, password) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(firebase_auth, email, password);
+    const { user } = userCredential;
 
-export const doSignInWithEmailAndPassword = (email, password) => {
-    return signInWithEmailAndPassword(firebase_auth, email, password)
-}
+    // Luo user documentin firestoressa
+    await setDoc(doc(firebase_db, 'users', user.uid), {
+      name,
+      email,
+      username,
+      score: 0, 
+    });
 
-export const doSignOut = () => {
-    return firebase_auth.signOut()
-}
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const doSignOut = async () => {
+  try {
+    await signOut(firebase_auth);
+  } catch (error) {
+    throw error;
+  }
+};
