@@ -81,7 +81,7 @@ export default function SignUp({ navigation }) {
   };
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}> /*Tämä asettelu ScrollViewille poistaa valkoisen palkin näytöltä*/
       <LinearGradient
         colors={['#b33939', '#4B0082']}
         style={styles.container}
