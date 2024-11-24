@@ -6,6 +6,7 @@ import Main from './components/main.js';
 import Login from './components/login.js';
 import Sign from './components/signin.js';
 import Scoreboard from './components/scoreboard.js';
+import CoinShop from './components/coinshop.js';
 import { AuthProvider } from './context/authContext/authContext.js';
 
 const Stack = createStackNavigator();
@@ -19,6 +20,7 @@ export default function App() {
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
           <Stack.Screen name="Sign" component={Sign} options={{ headerShown: false }} />
           <Stack.Screen name="Scoreboard" component={Scoreboard} options={{ headerShown: false }} />
+          <Stack.Screen name="Coinshop" component={CoinShop} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>
