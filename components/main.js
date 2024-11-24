@@ -3,8 +3,10 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-na
 import { LinearGradient } from 'expo-linear-gradient';
 import { AuthContext } from '../context/authContext/authContext.js';
 import { doSignOut } from '../firebase/auth';
+import UpperBar from './upperBar.js';
 
-export default function Main({ navigation }) {
+
+export default function Header({ navigation }) {
   const { userLoggedIn, currentUser } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
 
   const logout = async () => {
@@ -43,8 +45,20 @@ export default function Main({ navigation }) {
       colors={['#b33939', '#4B0082']} // TAUSTA VÄRIN LAITTO GRADIENTILLA
       style={styles.container}
     >
-      <Text style={styles.title}>P2W-Online</Text>
 
+          {/* Näytetään UpperBar kun käyttäjä on kirjaantunut sisään.*/}
+      {userLoggedIn && (
+        <View style={styles.upperBarContainer}>
+          <UpperBar 
+            userId={currentUser?.uid} // Käyttäjän ID välitetään yläpalkille
+            title="Dashboard" 
+            onSettingsPress={() => console.log('Settings pressed')}
+          />
+        </View>
+      )}
+      
+    <Text style={styles.title}>P2W-Online</Text>
+    
       <View style={styles.buttonContainer}>
         {!userLoggedIn ? (
           <>
@@ -129,9 +143,17 @@ export default function Main({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start', // Asetetaan aloitus ylhäällä
     alignItems: 'center',
     backgroundColor: '#b33939',
+  },
+
+ upperBarContainer: {
+    position: 'absolute',  
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1, 
   },
 
   title: {
@@ -142,7 +164,7 @@ const styles = StyleSheet.create({
     textShadowColor: '#000000',
     textShadowOffset: { width: -4, height: 2 },
     textShadowRadius: 1,
-    marginTop: -200,
+    marginTop: 100, // Asetetaan tilaa yläpalkin alle
   },
 
   buttonContainer: {

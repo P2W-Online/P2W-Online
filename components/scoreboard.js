@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { collection, onSnapshot, orderBy, limit, query } from 'firebase/firestore';
 import { firebase_db } from '../firebase/firebase';
+import UpperBar from './upperBar.js';
+import { AuthContext } from '../context/authContext/authContext.js';
 
 const Scoreboard = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { userLoggedIn, currentUser } = useContext(AuthContext); //Haetaan käyttäjän kirjautuminen authcontextista.
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -78,11 +81,22 @@ const Scoreboard = () => {
 
   return (
     <LinearGradient colors={['#b33939', '#4B0082']} style={styles.container}>
+    {/* NÄYTETÄÄN UPPERBAR KUN KÄYTTÄJÄ ON KIRJAUTUNUT SISÄÄN */}
+    {userLoggedIn && (
+      <View style={styles.upperBarContainer}>
+        <UpperBar
+          userId={currentUser?.uid} // Käyttäjän ID välitetään yläpalkille
+          title="Scoreboard"
+          onSettingsPress={() => console.log('Settings pressed')}
+        />
+      </View>
+    )}
+
       {/* Title */}
       <View style={styles.section}>
         <LinearGradient colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']} style={styles.sectionBg}>
           <Text style={styles.title}>Scoreboard</Text>
-        </LinearGradient>
+        </LinearGradient>  
       </View>
 
       {/* Podium */}
@@ -135,7 +149,14 @@ const Scoreboard = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: 100,
+  },
+  upperBarContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
   section: {
     marginHorizontal: 20,
@@ -251,7 +272,7 @@ const styles = StyleSheet.create({
     textShadowColor: '#000000',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
-    opacity: (props) => props.isPlaceholder ? 0.7 : 1, // slightly dim the placeholder text
+    //opacity: (props) => props.isPlaceholder ? 0.7 : 1, // slightly dim the placeholder text
   },
   coin: {
     width: 20,
