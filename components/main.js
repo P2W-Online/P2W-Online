@@ -130,6 +130,20 @@ export default function Header({ navigation }) {
             </TouchableOpacity>
 
             <TouchableOpacity
+              onPress={() => navigation.navigate('Boxshop')}
+              style={{ width: '100%' }}
+            >
+              <LinearGradient
+                colors={['#8A2BE2', '#DA70D6']}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Loot Box</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity
               onPress={logout}
               style={{ width: '100%' }}
             >
