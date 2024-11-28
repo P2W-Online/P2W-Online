@@ -171,7 +171,7 @@ export default function Header({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start', // Asetetaan aloitus ylhäällä
+    justifyContent: 'flex-start', 
     alignItems: 'center',
     backgroundColor: '#b33939',
   },
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     textShadowColor: '#000000',
     textShadowOffset: { width: -4, height: 2 },
     textShadowRadius: 1,
-    marginTop: 100, // Asetetaan tilaa yläpalkin alle
+    marginTop: 100, 
   },
 
   buttonContainer: {
