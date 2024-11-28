@@ -173,7 +173,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     textShadowColor: '#000000', 
     textShadowOffset: { width: -4, height: 2 }, 
-    textShadowRadius: 1, 
+    textShadowRadius: 1,
+    marginTop: 50, 
   
   },
 

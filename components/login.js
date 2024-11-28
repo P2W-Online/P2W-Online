@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, Keyboard, ScrollView, TouchableWithoutFeedback, Alert, KeyboardAvoidingView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { doSignInWithEmailAndPassword } from '../firebase/auth';
 import { AuthContext } from '../context/authContext/authContext.js';
@@ -8,26 +8,9 @@ export default function Login({ navigation }) {
   const { currentUser } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // KUUNTELIJAT NÄPPÄIMISTÖN KUUNTELEMISEEN (ilman tätä, arkun kuva hyppää tekstikenttien päälle.)
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardVisible(true);
-    });
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardVisible(false);
-    });
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
-
   const handleLogin = async () => {
-    // Tarkistetaan, että kaikki kentät on täytetty.
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
@@ -40,7 +23,6 @@ export default function Login({ navigation }) {
       navigation.navigate('Main');
     } catch (error) {
       console.error('Authentication error: ', error.message);
-      // virheilmotuksia
       let errorMessage = 'Login failed. Please try again.';
       if (error.code === 'auth/user-not-found') {
         errorMessage = 'No account found with this email.';
@@ -63,70 +45,65 @@ export default function Login({ navigation }) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <LinearGradient
-        colors={['#b33939', '#4B0082']}
-        style={styles.container}
-      >
-        <Text style={styles.title}>P2W-Online</Text>
-
-        <View style={styles.buttonContainer}>
-          {/* SÄHKÖPOSTIN TEKSTIKENTTÄ */}
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="email"
-            placeholderTextColor="#d3d3d3"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            editable={!isLoading}
-          />
-
-          {/* SALASANAN TEKSTIKENTTÄ*/}
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#d3d3d3"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            editable={!isLoading}
-          />
-
-          {/* LOGIN NAPPI GRADIENTILLA */}
-          <TouchableOpacity 
-            style={{ width: '100%' }}
-            onPress={handleLogin}
-            disabled={isLoading}
-          >
-            <LinearGradient
-              colors={['#8A2BE2', '#DA70D6']}
-              start={[0, 0]}
-              end={[1, 1]}
-              style={[
-                styles.button,
-                isLoading && { opacity: 0.7 }
-              ]}
+    <ScrollView
+      contentContainerStyle={styles.scrollContainer}
+      keyboardShouldPersistTaps="handled"
+      style={{ backgroundColor: '#4B0082', flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <LinearGradient colors={['#b33939', '#4B0082']} style={styles.container}>
+          <Text style={styles.title}>P2W-Online</Text>
+  
+          <View style={styles.buttonContainer}>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="email"
+              placeholderTextColor="#d3d3d3"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              editable={!isLoading}
+            />
+  
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="#d3d3d3"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              editable={!isLoading}
+            />
+  
+            <TouchableOpacity
+              style={{ width: '100%' }}
+              onPress={handleLogin}
+              disabled={isLoading}
             >
-              <Text style={styles.buttonText}>
-                {isLoading ? 'Logging in...' : 'Log in'}
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
+              <LinearGradient
+                colors={['#8A2BE2', '#DA70D6']}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={[styles.button, isLoading && { opacity: 0.7 }]}
+              >
+                <Text style={styles.buttonText}>
+                  {isLoading ? 'Logging in...' : 'Log in'}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
 
-        {/* KUVA NÄYTETÄÄN VAIN JOS NÄPPÄIMISTÖ EI OLE PÄÄLLÄ */}
-        {!isKeyboardVisible && (
+          {/* Kuvan näyttäminen ilman näppäimistön kuuntelua */}
           <Image
             source={require('../assets/chestOpen1.png')}
             style={styles.image}
           />
-        )}
-      </LinearGradient>
-    </TouchableWithoutFeedback>
+        </LinearGradient>
+      </TouchableWithoutFeedback>
+    </ScrollView>
   );
 }
 
@@ -136,8 +113,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
+    paddingBottom: 20,
+  
   },
-
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    backgroundColor: '#4B0082',
+  },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
@@ -146,9 +129,8 @@ const styles = StyleSheet.create({
     textShadowColor: '#000000',
     textShadowOffset: { width: -4, height: 2 },
     textShadowRadius: 1,
-    marginTop: -200,
+    marginTop: 100,
   },
-
   buttonContainer: {
     width: '80%',
     alignItems: 'center',
@@ -156,8 +138,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#d3d3d3',
     borderRadius: 10,
+    maxHeight: 300,
+    flex: 1,
   },
-
   input: {
     width: '100%',
     padding: 15,
@@ -168,17 +151,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     color: '#000000',
   },
-
   label: {
     fontSize: 15,
     fontWeight: 'bold',
     color: '#ffffff',
-    textShadowColor: '#000000', 
-    textShadowOffset: { width: -4, height: 2 }, 
+    textShadowColor: '#000000',
+    textShadowOffset: { width: -4, height: 2 },
     textShadowRadius: 1,
     alignSelf: 'flex-start',
   },
-
   button: {
     width: '100%',
     marginVertical: 20,
@@ -186,7 +167,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
   },
-
   buttonText: {
     color: '#ffffff',
     fontSize: 18,
@@ -195,10 +175,8 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: -2, height: 2 },
     textShadowRadius: 1,
   },
-
   image: {
-    position: 'absolute',
-    bottom: 20, 
+    marginTop: 150,
     width: 150,
     height: 150,
     resizeMode: 'contain',
