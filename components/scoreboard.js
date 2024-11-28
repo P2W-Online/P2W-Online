@@ -93,14 +93,14 @@ const Scoreboard = () => {
     )}
 
       {/* Title */}
-      <View style={styles.section}>
+      <View style={styles.titleContainer}>
         <LinearGradient colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']} style={styles.sectionBg}>
           <Text style={styles.title}>Scoreboard</Text>
         </LinearGradient>  
       </View>
 
       {/* Podium */}
-      <View style={styles.section}>
+      <View style={styles.podiumContainer}>
         <LinearGradient colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']} style={styles.sectionBg}>
           <View style={styles.podium}>
             {podiumPlayers.length >= 3 && (
@@ -121,6 +121,8 @@ const Scoreboard = () => {
             <Text style={styles.headerText}>Player</Text>
             <Text style={styles.headerText}>Score</Text>
           </View>
+
+          
           <ScrollView>
             {users.slice(3).map((user, index) => (
               <View key={index} style={styles.scoreRow}>
@@ -160,19 +162,32 @@ const styles = StyleSheet.create({
   },
   section: {
     marginHorizontal: 20,
-    marginBottom: 15,
+    marginBottom: 10,
     borderRadius: 15,
     overflow: 'hidden',
+    flex: 1,
+
   },
   sectionBg: {
-    padding: 15,
+    padding: 10,
     borderRadius: 15,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
+    flex: 1,
   },
   scoreboardSection: {
     flex: 1,
     marginBottom: 20,
+    padding: 5,
+  },
+
+  titleContainer: {
+    height: 80, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginHorizontal: 20, 
+    marginBottom: 10, 
+    borderRadius: 15, 
   },
   title: {
     color: '#FFFFFF',
@@ -182,6 +197,13 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0,0,0,0.4)',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 4,
+  },
+  podiumContainer: {
+    marginHorizontal: 20,  
+    marginBottom: 10,  
+    borderRadius: 15,  
+    overflow: 'hidden', 
+    height: 200,
   },
   podium: {
     flexDirection: 'row',
@@ -263,6 +285,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
+
   },
   scoreText: {
     flex: 1,
