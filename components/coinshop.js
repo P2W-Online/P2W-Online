@@ -6,6 +6,7 @@ import { firebase_db } from '../firebase/firebase';
 import UpperBar from './upperBar.js';
 import { Badge } from 'react-native-paper';
 import { AuthContext } from '../context/authContext/authContext.js';
+import CountDown from 'react-native-countdown-component';
 
 export default function Coinshop({ navigation }) {
   const { userLoggedIn, currentUser } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
@@ -13,13 +14,30 @@ export default function Coinshop({ navigation }) {
         navigation.navigate('Main');
     }
 
+     //Kolikoiden lisääminen pelajaan tilille kun DailyCoins-nappia on painettu                    
+   // const handleMoreCoins = {  
+      
+
+                                      
+    //}
+    
+
+
+    //Ostaminen/kolikoiden lisääminen pelajaan tilille kun hinta-nappia on painettu                    
+   // const handleBuying = {  
+      
+
+                                      
+    //}
+    
+
     return (   
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}> /*Tämä asettelu ScrollViewille poistaa valkoisen palkin näytöltä*/
         <LinearGradient
           colors={['#b33939', '#4B0082']}
           style={styles.container}
         > 
-        
+      
          {/* UPPER BAR */}
             <View style={styles.upperBarContainer}>
                 <UpperBar
@@ -45,7 +63,9 @@ export default function Coinshop({ navigation }) {
                 style={styles.yellowContainer}
               >                  
           </LinearGradient>
-          
+
+       
+       
           {/* TIME */}
           <LinearGradient
                 colors={['#AA4120', '#691010',]}
@@ -53,11 +73,24 @@ export default function Coinshop({ navigation }) {
                 end={[1, 1]}
                 style={styles.timeBoardContainer}
               > 
+                 <CountDown
+                 until={60 * 10 + 30}
+                 size={10}                 
+                 onFinish={() => alert('Finished')}
+                 digitTxtStyle={{color: '#ffffff'}}
+                 timeToShow={['H', 'M', 'S']}
+                 timeLabels={{ m: null, s: null}}
+                 showSeparator
+               />
+
+
+               
                <Image source={require('../assets/clock.png')} style={styles.clockImage}/>
                <Text style={styles.timeText}>8h 49min </Text>                
           </LinearGradient>   
           
           
+      
           {/* DAILYCOINSCONTAINER*/}
                 <LinearGradient
                     colors={['#DC8828', '#FAD36A']}
@@ -68,7 +101,7 @@ export default function Coinshop({ navigation }) {
                     <Image source={require('../assets/coin.png')} style={styles.coinImage} />
                     <Text style={styles.dailyCoinsText}>Daily Coins</Text>
                     <TouchableOpacity
-                        onPress={() => console.log("lootbox1")}  /*Tähän muokattava napin toimintoa*/
+                        onPress={() => console.log("lootbox1")} /*Tähän muokattava napin toimintoa*/
                         style={styles.dailyCoinsButtonContainer}
                         >
                         <LinearGradient
@@ -318,8 +351,8 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     margin: 12,
-    bottom: 30,
-    right: 35,
+    bottom: 55,
+    right: 55,
   }, 
 
   dailyCoinsContainer: {
