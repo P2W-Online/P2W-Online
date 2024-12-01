@@ -99,6 +99,7 @@ export default function Login({ navigation }) {
               source={require('../assets/kolikko1.png')}
               style={styles.moneyIcon}
               />
+              
               <Text style={styles.amount}>1000</Text>
               <TouchableOpacity
               onPress={() => navigation.navigate('Coinshop')}

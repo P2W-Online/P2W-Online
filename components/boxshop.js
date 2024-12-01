@@ -5,11 +5,33 @@ import { Badge } from 'react-native-paper';
 import UpperBar from './upperBar.js';
 import { AuthContext } from '../context/authContext/authContext.js';
 import { ScrollView } from 'react-native';
+import { buyLootBox, getUserData, claimFreeLootbox } from '../firebase/firestore.js';
 
 export default function BoxShop({ navigation }) {
-    const { userLoggedIn, currentUser } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
+    const { userLoggedIn, currentUser, userData, setUserData } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
     if (!userLoggedIn) {
         navigation.navigate('Main');
+    }
+    const buy = async (box, amount, price) => {
+        //console.log(userData)
+        if(price > userData.coins){
+            console.log("Ei rahaa")
+        } else {
+            let newCoinsValue = userData.coins - price
+            //const buy = buyLootBox(currentUser.uid, userData, box, amount, newCoinsValue)
+            const osto = await buyLootBox(currentUser.uid, userData, box, amount, newCoinsValue)
+            console.log(osto)
+            if ( osto == "success") {
+                const uData = await getUserData(currentUser.uid)
+                setUserData({...uData})
+            } else {
+                console.log("virhe: ", osto)
+            }
+        }
+    }
+    const freeBox = async () => {
+        // Asetetaan 24h cooldown ilmaiselle lootboxille
+        await claimFreeLootbox(currentUser.uid, userData, (Date.now()+86400000))
     }
     return (
         <LinearGradient
@@ -36,26 +58,44 @@ export default function BoxShop({ navigation }) {
                 >
                     <Image source={require('../assets/chest.png')} style={styles.chest1Image} />
                     <Text style={styles.freeLootBoxText}>Daily Bonus</Text>
+                    
+                    {/* Jos laatikko on haettu viimeisen 24h aikana, ei anneta pelaajan hakea uutta laatikkoa, vaan muutetaan napin tekstiksi Wait */}
+                    {parseInt(userData.freeLootboxTimer) <= Date.now() ? (
                     <TouchableOpacity
-                        onPress={() => console.log("lootbox1")}
+                        onPress={() => freeBox()}
                         style={styles.freeLootBox1ButtonContainer}
                     >
-
                         <LinearGradient
                             colors={['#DC8828', '#FAD36A']}
                             start={[0, 1]}
                             end={[0, 0]}
                             style={styles.freeLootBoxButton}
                         >
-                            <Text style={styles.freeLootBoxButtonText}>Go!</Text>
-                            <Badge style={styles.freeLootBox1Badge}>1</Badge>
+                                <>
+                                <Text style={styles.freeLootBoxButtonText}>Go!</Text>
+                                <Badge style={styles.freeLootBox1Badge}>1</Badge>
+                                </>
                         </LinearGradient>
-
                     </TouchableOpacity>
+                     ) : (
+                        <TouchableOpacity
+                        style={styles.freeLootBox1ButtonContainer}
+                    >
+                        <LinearGradient
+                            colors={['#DC8828', '#FAD36A']}
+                            start={[0, 1]}
+                            end={[0, 0]}
+                            style={styles.freeLootBoxButton}
+                        >             
+                        <Text style={styles.freeLootBoxButtonText}>Wait</Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                    )}
 
                 </LinearGradient>
 
                 {/* Super Bonus*/}
+                {/* Tälle napille ei ole vielä toiminnallisuutta */}
                 <LinearGradient
                     colors={['#5638C5', '#FC5AFF']}
                     start={[0, 0]}
@@ -97,6 +137,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>1 Chest</Text>
                         <Image source={require('../assets/chest.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Basic',1,125)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -107,6 +151,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>125</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
 
                     <LinearGradient
@@ -117,6 +162,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>3 Chests</Text>
                         <Image source={require('../assets/chest.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Basic',3,350)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -127,6 +176,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>350</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
 
                     <LinearGradient
@@ -137,16 +187,20 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>10 Chests</Text>
                         <Image source={require('../assets/chest.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Basic',10,1100)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
                             end={[0, 0]}
                             style={styles.lootBoxCardButton}
                         >
-
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>1100</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
                 </View>
 
@@ -160,6 +214,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>1 Chest</Text>
                         <Image source={require('../assets/chest2.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Super',1,250)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -170,6 +228,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>250</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
 
                     <LinearGradient
@@ -180,6 +239,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>3 Chests</Text>
                         <Image source={require('../assets/chest2.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Super',3,700)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -190,6 +253,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>700</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
 
                     <LinearGradient
@@ -200,6 +264,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>10 Chests</Text>
                         <Image source={require('../assets/chest2.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Super',10,2200)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -210,6 +278,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>2200</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
                 </View>
 
@@ -223,6 +292,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>1 Chest</Text>
                         <Image source={require('../assets/chest2.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Super',10,250)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -233,6 +306,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>250</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
 
                     <LinearGradient
@@ -243,6 +317,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>3 Chests</Text>
                         <Image source={require('../assets/chest2.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Super',10,700)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -253,6 +331,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>700</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
 
                     <LinearGradient
@@ -263,6 +342,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>10 Chests</Text>
                         <Image source={require('../assets/chest2.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Super',10,2200)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -273,6 +356,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>2200</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
                 </View>
 
@@ -286,6 +370,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>1 Chest</Text>
                         <Image source={require('../assets/chest2.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Super',1,250)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -296,6 +384,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>250</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
 
                     <LinearGradient
@@ -306,6 +395,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>3 Chests</Text>
                         <Image source={require('../assets/chest2.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Super',3,700)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -316,6 +409,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>700</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
 
                     <LinearGradient
@@ -326,6 +420,10 @@ export default function BoxShop({ navigation }) {
                     >
                         <Text style={styles.lootBoxCardText}>10 Chests</Text>
                         <Image source={require('../assets/chest2.png')} style={styles.chest1Image} />
+                        <TouchableOpacity
+                        onPress={() => buy('Super',10,2200)} //Box_type, amount, price 
+                        style={styles.buyButton}
+                    >
                         <LinearGradient
                             colors={['#2EA944', '#68E74F']}
                             start={[0, 1]}
@@ -336,6 +434,7 @@ export default function BoxShop({ navigation }) {
                             <Image source={require('../assets/coin.png')} style={styles.lootBoxCoinImage} />
                             <Text style={styles.lootBoxCardButtonText}>2200</Text>
                         </LinearGradient>
+                        </TouchableOpacity>
                     </LinearGradient>
                 </View>
             </ScrollView>
@@ -469,10 +568,13 @@ const styles = StyleSheet.create({
         textShadowRadius: 1,
         marginTop: 5,
     },
+    buyButton: {
+        width: '80%'
+    },
     lootBoxCardButton: {
         flexDirection: 'row',
         alignItems: 'center',
-        width: '80%',
+        width: '100%',
         paddingTop: 5,
         paddingBottom: 5,
         marginBottom: 10,
