@@ -23,11 +23,6 @@ export const doCreateUserWithEmailAndPassword = async (name, email, username, pa
       username,
       score: 0, 
       coins:0, 
-      inventory: {
-        commonBox: 0, 
-        rareBox: 0,
-        legendaryBox: 0,
-    },
     });
 
     return user;
