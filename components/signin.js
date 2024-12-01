@@ -149,7 +149,6 @@ export default function SignUp({ navigation }) {
             </LinearGradient>
           </TouchableOpacity>
         </View>
-
         <Image
           source={require('../assets/chestOpen1.png')}
           style={styles.image}
