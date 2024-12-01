@@ -31,6 +31,13 @@ const Scoreboard = () => {
     return unsubscribe;
   }, []);
 
+  const formatScore = (score) => {
+    if (score >= 10_000_000) {
+      return `${(score / 1_000_000).toFixed(1)}M`; // Esim. "10.5M"
+    }
+    return score.toLocaleString(); // Alle 10 miljoonaa muotoillaan normaalisti
+  };
+
   const podiumPlayers = users.slice(0, 3);
 
   const podiumColors = [
@@ -42,6 +49,9 @@ const Scoreboard = () => {
   const renderPodiumPlayer = (playerIndex, position) => {
     const player = podiumPlayers[playerIndex];
     if (!player) return null;
+
+    const formattedScore = formatScore(player.score); 
+    const fontSize = player.score > 1000000 ? 18 : 24;
 
     return (
       <View style={styles.playerContainer}>
@@ -55,7 +65,9 @@ const Scoreboard = () => {
         >
           <Image source={require('../assets/pfp.png')} style={styles.playerIcon} />
           <Text style={styles.playerName}>{player.username}</Text>
-          <Text style={styles.playerScore}>{player.score.toLocaleString()}</Text>
+          <Text style={[styles.playerScore, { fontSize }]}>
+            {formatScore(player.score)} {/* Muotoiltu pistemäärä */}
+          </Text>
           <Image source={require('../assets/medal.png')} style={styles.medalIcon} />
         </LinearGradient>
       </View>
@@ -122,25 +134,26 @@ const Scoreboard = () => {
             <Text style={styles.headerText}>Score</Text>
           </View>
 
-          
           <ScrollView>
-            {users.slice(3).map((user, index) => (
-              <View key={index} style={styles.scoreRow}>
-                <LinearGradient
-                  colors={['#32CD32', '#28A428']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={[styles.scoreCard, styles.bubbleEffect]}
-                >
-                  <View style={styles.scoreContent}>
+            {users.slice(3).map((user, index) => {
+              return (
+                <View key={index} style={styles.scoreRow}>
+                  <LinearGradient
+                    colors={['#32CD32', '#28A428']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={[styles.scoreCard, styles.bubbleEffect]}
+                  >
+                   <View style={styles.scoreContent}>
                     <Image source={require('../assets/pfp.png')} style={styles.playerIconSmall} />
                     <Text style={styles.scoreText}>{user.username}</Text>
                     <View style={styles.coin} />
                     <Text style={styles.scoreText}>{user.score.toLocaleString()}</Text>
                   </View>
-                </LinearGradient>
-              </View>
-            ))}
+                  </LinearGradient>
+                </View>
+              );
+            })}
           </ScrollView>
         </LinearGradient>
       </View>
