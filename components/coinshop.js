@@ -89,6 +89,25 @@ export default function Coinshop({ navigation }) {
          
          {/* 1000 COINS*/}
         <LinearGradient
+
+                colors={['#FFC0C0', '#FF7E7E', '#FF0000',]}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={styles.buyingCoins}
+              >                       
+              <Image
+              source={require('../assets/kolikko1.png')}
+              style={styles.moneyIcon}
+              />
+              
+              <Text style={styles.amount}>1000</Text>
+              <TouchableOpacity
+              onPress={() => navigation.navigate('Coinshop')}
+              style={{ width: '40%', left:48}}
+            >
+              <LinearGradient
+                colors={['#2EA944', '#68E74F',]}
+
                colors={['#FF7E7E','#B64B43','#FFC0C0']}
                start={[0, 0]}
                end={[1, 1]}

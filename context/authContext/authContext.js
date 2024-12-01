@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { firebase_auth } from '../../firebase/firebase';
+import { collection, query, orderBy, limit, getDoc, getDocs, doc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { firebase_auth, firebase_db } from '../../firebase/firebase';
+import { getUserData } from '../../firebase/firestore';
 import { onAuthStateChanged } from '@firebase/auth';
 
 export const AuthContext = createContext({
@@ -7,17 +9,22 @@ export const AuthContext = createContext({
   userLoggedIn: false,
   loading: true,
   setUser: () => {},
+  userData: null,
+  setUserData: () => {},
 });
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState(null)
 
-  const initializeUser = (user) => {
+  const initializeUser = async (user) => {
     if (user) {
       setCurrentUser({ ...user });
       setUserLoggedIn(true);
+      const uData = await getUserData(user.uid)
+      setUserData({...uData})
     } else {
       setCurrentUser(null);
       setUserLoggedIn(false);
@@ -25,8 +32,8 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   };
 
-  const setUser = (userData) => {
-    setCurrentUser(userData);
+  const setUser = (user) => {
+    setCurrentUser(user);
     setUserLoggedIn(true);
   };
 
@@ -39,7 +46,9 @@ export const AuthProvider = ({ children }) => {
     currentUser,
     userLoggedIn,
     loading,
+    userData,
     setUser,
+    setUserData,
   };
 
   return (
