@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function UpperBar({ userId, onSettingsPress, title }) {
   const [points, setPoints] = useState(0);
+  const [coins, setCoins] = useState(0);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const navigation = useNavigation(); 
 
@@ -19,6 +20,26 @@ export default function UpperBar({ userId, onSettingsPress, title }) {
         if (docSnapshot.exists()) {
           const userData = docSnapshot.data();
           setPoints(userData?.score || 0); 
+        } else {
+          console.error('User document does not exist!');
+        }
+      },
+      (error) => {
+        console.error('Error fetching user data:', error);
+      }
+    );
+
+    return unsubscribe; 
+  }, [userId]);
+
+   //Haetaan käyttäjän kolikot firestoresta.
+   useEffect(() => {
+    const unsubscribe = onSnapshot(
+      doc(firebase_db, 'users', userId),
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const userData = docSnapshot.data();
+          setCoins(userData?.coins || 0); 
         } else {
           console.error('User document does not exist!');
         }
@@ -62,6 +83,20 @@ export default function UpperBar({ userId, onSettingsPress, title }) {
         <Text style={styles.scoreText}>{points.toLocaleString()}</Text>
       </View>
     </LinearGradient>
+
+
+
+   
+    {/* Pelaajan kolikot */}
+    <LinearGradient
+      colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']} 
+      style={styles.coinsContainer} 
+    >
+      <Image source={require('../assets/coin.png')} style={styles.oneCoinImage} />      
+      <Text style={styles.amountText}>{coins.toLocaleString()}</Text>     
+    </LinearGradient>
+
+
 
     {/* Dropdown menu */}
 
@@ -176,4 +211,29 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 1, height: 1 }, 
     textShadowRadius: 2,  
   },
+
+  oneCoinImage: {
+    width: 20,
+    height: 20,      
+},
+
+amountText: {
+  color: '#ffffff',
+  fontSize: 16,
+  left: 5,  
+  textShadowColor: '#000000',
+  textShadowOffset: { width: -1, height: 1 },
+  textShadowRadius: 1,
+},
+
+coinsContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingVertical: 5,
+  paddingHorizontal: 10,
+  borderRadius: 20,
+  width: 150,
+  height: 40,
+},
+
 });
