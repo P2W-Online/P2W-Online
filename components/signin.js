@@ -21,6 +21,11 @@ export default function SignUp({ navigation }) {
       return false;
     }
 
+    if (username.length > 10) { 
+      Alert.alert('Error', 'Username must be 10 characters or fewer');
+      return false;
+    }
+  
     if (password !== verifyPassword) {
       Alert.alert('Error', 'Passwords do not match');
       return false;
