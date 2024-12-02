@@ -117,7 +117,7 @@ export default function Inventory({ navigation }) {
     }, [userLoggedIn, currentUser]);
 
     const handleOpenBox = async (boxType) => {
-        if (!userData?.lootBoxes || !userData.lootBoxes[boxType]) {
+        if (!userData?.inventory || !userData.inventory[boxType]) {
             Alert.alert('Error', 'No boxes available to open');
             return;
         }
@@ -129,9 +129,9 @@ export default function Inventory({ navigation }) {
             const { minPoints, maxPoints } = BOX_TYPES[boxType];
             const pointsWon = Math.floor(Math.random() * (maxPoints - minPoints + 1)) + minPoints;
 
-            const newLootBoxes = {
-                ...userData.lootBoxes,
-                [boxType]: userData.lootBoxes[boxType] - 1,
+            const newInventory = {
+                ...userData.inventory,
+                [boxType]: userData.inventory[boxType] - 1,
             };
 
             const newScore = userData.score + pointsWon;
@@ -146,7 +146,7 @@ export default function Inventory({ navigation }) {
             // Update the user's data in Firestore
             const userRef = doc(firebase_db, 'users', currentUser.uid);
             await updateDoc(userRef, {
-                lootBoxes: newLootBoxes,
+                inventory: newInventory,
                 score: newScore,
             });
 
@@ -191,7 +191,7 @@ export default function Inventory({ navigation }) {
                             <View style={styles.boxDetails}>
                                 <Text style={styles.boxTitle}>{config.name}</Text>
                                 <Text style={styles.boxCount}>
-                                    Owned: {userData?.lootBoxes?.[boxType] || 0}
+                                    Owned: {userData?.inventory?.[boxType] || 0}
                                 </Text>
                                 <Text style={styles.pointsRange}>
                                     Points: {config.minPoints} - {config.maxPoints}
@@ -201,10 +201,10 @@ export default function Inventory({ navigation }) {
                         
                         <TouchableOpacity
                             onPress={() => handleOpenBox(boxType)}
-                            disabled={!userData?.lootBoxes?.[boxType]}
+                            disabled={!userData?.inventory?.[boxType]}
                             style={[
                                 styles.openButton,
-                                !userData?.lootBoxes?.[boxType] && styles.disabledButton
+                                !userData?.inventory?.[boxType] && styles.disabledButton
                             ]}
                         >
                             <LinearGradient
@@ -214,7 +214,7 @@ export default function Inventory({ navigation }) {
                                 style={styles.openButtonGradient}
                             >
                                 <Text style={styles.openButtonText}>
-                                    {userData?.lootBoxes?.[boxType] ? 'OPEN BOX' : 'NO BOXES'}
+                                    {userData?.inventory?.[boxType] ? 'OPEN BOX' : 'NO BOXES'}
                                 </Text>
                             </LinearGradient>
                         </TouchableOpacity>
