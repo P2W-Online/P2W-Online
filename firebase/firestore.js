@@ -62,9 +62,9 @@ export const getUserData = async (userId) => {
 export const buyLootBox = async (userId, userData, lootbox, amount, newCoinsValue) => {
 
   let newBoxes = {}
-  if(userData.lootBoxes !== undefined){
-    if(userData.lootBoxes[lootbox] !== undefined){ 
-      userData.lootBoxes[lootbox] = userData.lootBoxes[lootbox] + amount
+  if(userData.inventory !== undefined){
+    if(userData.inventory[lootbox] !== undefined){ 
+      userData.inventory[lootbox] = userData.inventory[lootbox] + amount
     } else {
       newBoxes[lootbox] = amount
     }
@@ -72,13 +72,13 @@ export const buyLootBox = async (userId, userData, lootbox, amount, newCoinsValu
     newBoxes[lootbox] = amount
   } 
 
-  let boxes = {...userData.lootBoxes, ...newBoxes}
+  let boxes = {...userData.inventory, ...newBoxes}
   
   try {
     const userRef = doc(firebase_db, 'users', userId);
     await updateDoc(userRef, {
       coins: newCoinsValue,
-      lootBoxes: boxes,
+      inventory: boxes,
     });
   } catch (error) {
     console.error('Error buying lootbox:', error);
@@ -86,7 +86,7 @@ export const buyLootBox = async (userId, userData, lootbox, amount, newCoinsValu
   }  
 
   return("success")
-} 
+}
 
 export const claimFreeLootbox = async (userId, userData, date) => {
   try {

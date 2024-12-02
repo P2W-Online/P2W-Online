@@ -51,7 +51,7 @@ const Scoreboard = () => {
     if (!player) return null;
 
     const formattedScore = formatScore(player.score); 
-    const fontSize = player.score > 1000000 ? 18 : 24;
+    const fontSize = player.score > 1000000 ? 24 : 18; // Käänsin nämä toisin päin. Lyhennetty pistemäärä näytetään isommalla fontilla (koska siinä on vähemmän merkkejä) | Aaro
 
     return (
       <View style={styles.playerContainer}>
@@ -277,12 +277,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   headerText: {
+    flex: 1,
     color: '#000',
     fontSize: 24,
     fontWeight: 'bold',
     textShadowColor: '#FFFFFF',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
+    textAlign: 'left',
   },
   scoreRow: {
     marginVertical: 6,

@@ -30,7 +30,10 @@ export default function Coinshop({ navigation }) {
                                       
     //}
     
-
+    const handleBuying = () => {
+      // Tämä ei tee mitään vielä
+    }
+    
     return (   
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}> /*Tämä asettelu ScrollViewille poistaa valkoisen palkin näytöltä*/
         <LinearGradient
@@ -73,7 +76,7 @@ export default function Coinshop({ navigation }) {
                 end={[1, 1]}
                 style={styles.timeBoardContainer}
               > 
-                 <CountDown
+                 {/* <CountDown
                  until={60 * 10 + 30}
                  size={10}                 
                  onFinish={() => alert('Finished')}
@@ -81,7 +84,7 @@ export default function Coinshop({ navigation }) {
                  timeToShow={['H', 'M', 'S']}
                  timeLabels={{ m: null, s: null}}
                  showSeparator
-               />
+               /> */}
 
 
                
