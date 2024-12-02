@@ -83,7 +83,7 @@ export const buyLootBox = async (userId, userData, lootbox, amount, newCoinsValu
   } catch (error) {
     console.error('Error buying lootbox:', error);
     throw error;
-  }  
+  } 
 
   return("success")
 }
@@ -94,11 +94,11 @@ export const claimFreeLootbox = async (userId, userData, date) => {
     await updateDoc(userRef, {
       freeLootboxTimer: date
     });
-    await buyLootBox(userId, userData, 'Basic', 1, userData.coins)
+    await buyLootBox(userId, userData, 'commonBox', 1, userData.coins)
   } catch (error) {
     console.error('Error claiming free lootbox:', error);
     throw error;
   }
 
-  return("success")
+  return("success") 
 }

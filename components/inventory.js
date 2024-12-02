@@ -43,7 +43,7 @@ function TickerList({ number, fontSize, index, reset }) {
         <View style={{ height: fontSize, overflow: "hidden" }}>
             <MotiView
                 animate={{
-                    translateY: -fontSize * 1.1 * (reset ? number : number + 40),
+                    translateY: -fontSize * 1.105 * (reset ? number : number + 40),
                 }}
                 transition={{
                     delay: (5 - index) * _stagger,
@@ -71,7 +71,7 @@ function TickerList({ number, fontSize, index, reset }) {
 }
 
 function Ticker({ value = "00000", fontSize = 50 }) {
-  const paddedValue = value.toString().padStart(5, '0');
+  const paddedValue = value.toString().padStart(4, '0');
   const splitValue = paddedValue.split('');
     return (
         <View style={styles.numbersContainer}>
@@ -255,6 +255,10 @@ export default function Inventory({ navigation }) {
 }
 
 const styles = StyleSheet.create({ 
+    container: {
+        flex: 1,
+        overflow: 'hidden',
+    },
     boxCard: {
         margin: 20,
         padding: 15,
