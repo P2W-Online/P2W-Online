@@ -86,7 +86,7 @@ export const buyLootBox = async (userId, userData, lootbox, amount, newCoinsValu
   } 
 
   return("success")
-}
+} 
 
 export const claimFreeLootbox = async (userId, userData, date) => {
   try {
