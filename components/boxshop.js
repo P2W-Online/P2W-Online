@@ -472,15 +472,16 @@ const styles = StyleSheet.create({
         textShadowRadius: 1,
     },
     lootBoxCardsContainer: {
-        flex: 1,
+        //flex: 1,
         overflow: 'auto'
 
     },
     lootBoxCardContainer: {
-        flex: 1,
+        //flex: 1,
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-evenly',
+        height: 'auto',
 
     },
     lootBoxCard: {
