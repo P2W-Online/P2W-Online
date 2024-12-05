@@ -33,9 +33,9 @@ const Scoreboard = () => {
 
   const formatScore = (score) => {
     if (score >= 10_000_000) {
-      return `${(score / 1_000_000).toFixed(1)}M`; // Esim. "10.5M"
+      return `${(score / 1_000_000).toFixed(1)}M`; 
     }
-    return score.toLocaleString(); // Alle 10 miljoonaa muotoillaan normaalisti
+    return score.toLocaleString();
   };
 
   const podiumPlayers = users.slice(0, 3);
@@ -105,10 +105,8 @@ const Scoreboard = () => {
     )}
 
       {/* Title */}
-      <View style={styles.titleContainer}>
-        <LinearGradient colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']} style={styles.sectionBg}>
-          <Text style={styles.title}>Scoreboard</Text>
-        </LinearGradient>  
+      <View style={[styles.titleContainer, styles.titleBackground]}>
+        <Text style={styles.title}>Scoreboard</Text>
       </View>
 
       {/* Podium */}
@@ -193,23 +191,26 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 5,
   },
-
   titleContainer: {
     height: 80, 
     justifyContent: 'center', 
     alignItems: 'center', 
-    marginHorizontal: 20, 
     marginBottom: 10, 
-    borderRadius: 15, 
+    width: '100%',
   },
   title: {
-    color: '#FFFFFF',
     fontSize: 38,
     fontWeight: 'bold',
-    textAlign: 'center',
-    textShadowColor: 'rgba(0,0,0,0.4)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
+    color: '#ffffff',
+    textShadowColor: '#000000',
+    textShadowOffset: { width: -2, height: 2 },
+    textShadowRadius: 1,
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderColor: '#fafafa',
+    width: '100%', 
+    textAlign: 'center', 
+    paddingBottom: 10,
   },
   podiumContainer: {
     marginHorizontal: 20,  
@@ -310,7 +311,6 @@ const styles = StyleSheet.create({
     textShadowColor: '#000000',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
-    //opacity: (props) => props.isPlaceholder ? 0.7 : 1, // slightly dim the placeholder text
   },
   coin: {
     width: 20,
