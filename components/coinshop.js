@@ -120,7 +120,6 @@ export default function Coinshop({ navigation }) {
           <Text style={styles.dailyCoinsText}>Daily Coins</Text>
           {freeCoinsClaimed ? (
             <TouchableOpacity
-            onPress={handleFreeCoins}
               style={styles.dailyCoinsButtonContainer}
             >
               <LinearGradient
@@ -165,14 +164,10 @@ export default function Coinshop({ navigation }) {
                 source={require('../assets/coin1.png')}
                 style={styles.moneyImage}
               />
-              <Image
-                source={require('../assets/coin.png')}
-                style={styles.oneCoinImage}
-              />
               <Text style={styles.amountText}>1000</Text>
               <TouchableOpacity
                 onPress={() => handleBuyingCoins(1000)}
-                style={{ width: '40%', left: 48 }}
+                style={{ flex:1, height:'100%' }}
               >
                 <LinearGradient
                   colors={['#2b711e', '#8feb7d']}
@@ -196,14 +191,10 @@ export default function Coinshop({ navigation }) {
                 source={require('../assets/coin2.png')}
                 style={styles.moneyImage}
               />
-              <Image
-                source={require('../assets/coin.png')}
-                style={styles.oneCoinImage}
-              />
               <Text style={styles.amountText}>3000</Text>
               <TouchableOpacity
                 onPress={() => handleBuyingCoins(3000)}
-                style={{ width: '40%', left: 48 }}
+                style={{ flex:1, height:'100%' }}
               >
                 <LinearGradient
                   colors={['#2b711e', '#8feb7d']}
@@ -228,14 +219,10 @@ export default function Coinshop({ navigation }) {
                 source={require('../assets/coin3.png')}
                 style={styles.moneyImage}
               />
-              <Image
-                source={require('../assets/coin.png')}
-                style={styles.oneCoinImage}
-              />
               <Text style={styles.amountText}>7 000</Text>
               <TouchableOpacity
                 onPress={() => handleBuyingCoins(7000)}
-                style={{ width: '40%', left: 48 }}
+                style={{ flex:1, height:'100%' }}
               >
                 <LinearGradient
                   colors={['#2b711e', '#8feb7d']}
@@ -259,14 +246,10 @@ export default function Coinshop({ navigation }) {
                 source={require('../assets/coin4.png')}
                 style={styles.moneyImage}
               />
-              <Image
-                source={require('../assets/coin.png')}
-                style={styles.oneCoinImage}
-              />
               <Text style={styles.amountText}>15 000</Text>
               <TouchableOpacity
                 onPress={() => handleBuyingCoins(15000)}
-                style={{ width: '40%', left: 48 }}
+                style={{ flex:1, height:'100%' }}
               >
                 <LinearGradient
                   colors={['#2b711e', '#8feb7d']}
@@ -285,20 +268,18 @@ export default function Coinshop({ navigation }) {
               start={[0, 0]}
               end={[1, 1]}
               style={styles.buyingCoinsContainer}
-            >
+            > 
 
               <Image
                 source={require('../assets/coin5.png')}
                 style={styles.moneyImage}
               />
-              <Image
-                source={require('../assets/coin.png')}
-                style={styles.oneCoinImage}
-              />
-              <Text style={styles.amountText}>40 000</Text>
+              <Text style={styles.amountText}>
+                40 000
+              </Text>
               <TouchableOpacity
                 onPress={() => handleBuyingCoins(40000)}
-                style={{ width: '40%', left: 48 }}
+                style={{ flex:1, height:'100%' }}
               >
                 <LinearGradient
                   colors={['#2b711e', '#8feb7d']}
@@ -309,7 +290,7 @@ export default function Coinshop({ navigation }) {
                   <Text style={styles.buttonText}>24,99€</Text>
                 </LinearGradient>
               </TouchableOpacity>
-            </LinearGradient>
+              </LinearGradient>
           </View>
         </View>
       </LinearGradient>
@@ -394,7 +375,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    margin: 15,
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop:10,
     height: 75,
     borderColor: 'white',
     borderWidth: 2,
@@ -453,64 +436,69 @@ const styles = StyleSheet.create({
   },
 
   coinBoardContainer: {
+    flex:1,
     backgroundColor: ('#54022A'),
     width: '92%',
-    height: 450,
-    bottom: 40,
+    paddingTop:10,
+    paddingBottom:10,
     borderRadius: 20,
+    marginBottom:20,
   },
 
   form: {
-    width: '65%',
+    flex:1,
+    flexDirection:'column',
+    justifyContent:'center',
+    alignContent:'center',
   },
 
   buyingCoinsContainer: {
+    flex:1,
+    flexDirection:'row',
+    backgroundColor:'white',
+    justifyContent: 'space-around',
     padding: 10,
     borderRadius: 10,
-    marginBottom: 20,
-    height: 65,
-    width: '142%',
-    top: 20,
-    left: 13,
+    marginTop:5,
+    marginBottom: 5,
+    marginLeft: 10,
+    marginRight: 10,
     borderColor: '#ffbaba',
     borderWidth: 2,
     borderRadius: 20,
   },
 
   moneyImage: {
-    width: 60,
-    height: 60,
-    position: 'absolute',
-    left: 10,
+     height: 50, 
+     width: 50, 
+     alignSelf:'center'
   },
 
   oneCoinImage: {
-    width: 20,
-    height: 20,
-    top: 10,
-    left: 88,
+    height: 40, 
+    width: 40, 
+    
   },
 
   amountText: {
+    flex:1, 
+    flexDirection:'row',
+    height:'100%',
+    textAlignVertical:'center',
+    textAlign:'center',
     color: '#ffffff',
     fontSize: 16,
-    left: 115,
-    bottom: 10,
     textShadowColor: '#000000',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
   },
 
   buttonContainer: {
-    width: '100%',
-    marginVertical: 10,
+    flex:1, 
+    borderRadius: 4, 
+    height:'100%',
     padding: 15,
-    alignItems: 'center',
-    backgroundColor: '#8a2be2',
-    left: 145,
     borderRadius: 10,
-    bottom: 64,
-    height: 66,
     borderColor: '#ffbaba',
     borderWidth: 2,
     borderRadius: 20,
@@ -519,10 +507,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#ffffff',
     fontSize: 18,
+    textAlign:'center',
     fontWeight: 'bold',
     textShadowColor: '#000000',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
-    top: 5,
+    //top: 5,
   },
 });
