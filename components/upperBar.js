@@ -82,7 +82,7 @@ export default function UpperBar({ userId, onSettingsPress, title }) {
         <Text style={styles.scoreText}>{points.toLocaleString()}</Text>
       </View>
     </LinearGradient>
-  
+
     {/* Pelaajan kolikot */}
     <LinearGradient
       colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']} 
@@ -97,29 +97,58 @@ export default function UpperBar({ userId, onSettingsPress, title }) {
     {/* Dropdown menu */}
 
     <View style={styles.menuContainer}>
+  <LinearGradient
+    colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']}
+    style={styles.menuButtonGradient}
+  >
+    <TouchableOpacity style={styles.menuButton} onPress={toggleDropdown}>
+      <Text style={styles.menuIcon}>☰</Text>
+    </TouchableOpacity>
+  </LinearGradient>
 
-    <LinearGradient
-      colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']} // MenuContainerin gradientin värit
-      style={styles.menuButtonGradient}
-    >
+  {dropdownVisible && (
+    <View style={styles.dropdown}>
 
-      <TouchableOpacity style={styles.menuButton} onPress={toggleDropdown}>
-        <Text style={styles.menuIcon}>☰</Text>
+      <TouchableOpacity
+        style={styles.dropdownItem}
+        onPress={() => navigation.navigate('Scoreboard')}
+      >
+        <Text style={styles.dropdownText}>Scoreboard</Text>
       </TouchableOpacity>
-      </LinearGradient>
 
-      {dropdownVisible && (
-        <View style={styles.dropdown}>
-          <TouchableOpacity style={styles.dropdownItem} onPress={onSettingsPress}>
-            <Text style={styles.dropdownText}>Settings</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.dropdownItem} onPress={logout}>
-            <Text style={styles.dropdownText}>Log Out</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <TouchableOpacity
+        style={styles.dropdownItem}
+        onPress={() => navigation.navigate('Coinshop')}
+      >
+        <Text style={styles.dropdownText}>Coinshop</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.dropdownItem}
+        onPress={() => navigation.navigate('Inventory')}
+      >
+        <Text style={styles.dropdownText}>Inventory</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.dropdownItem}
+        onPress={() => navigation.navigate('Boxshop')}
+      >
+        <Text style={styles.dropdownText}>Box Shop</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.dropdownItem}
+        onPress={() => navigation.navigate('Settings')}
+      >
+        <Text style={styles.dropdownText}>Settings</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.dropdownItem} onPress={logout}>
+        <Text style={styles.dropdownText}>Log Out</Text>
+      </TouchableOpacity>
       
     </View>
+  )}
+</View>
   </View>
 );
 }
