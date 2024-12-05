@@ -102,3 +102,28 @@ export const claimFreeLootbox = async (userId, userData, date) => {
 
   return("success") 
 }
+
+export const updateUserCoins = async(userId, newCoins) => {
+  try {
+    const userRef = doc(firebase_db, 'users', userId);
+    await updateDoc(userRef, {
+      coins: newCoins
+    });
+  } catch (error) {
+    console.error('Error updating coins:', error);
+    throw error;
+  }
+}
+
+export const claimFreeCoins = async(userId, coins, date) => {
+  try {
+    const userRef = doc(firebase_db, 'users', userId);
+    await updateDoc(userRef, {
+      freeCoinsTimer: date
+    });
+    await updateUserCoins(userId, coins)
+  } catch (error) {
+    console.error('Error claiming free coins:', error);
+    throw error;
+  }
+}

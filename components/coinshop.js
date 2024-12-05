@@ -1,296 +1,321 @@
-import React, { useState, useEffect,  useContext } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, ScrollView, Button, Alert, TouchableOpacity } from 'react-native';
+import React, { useState, useContext, useRef } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { collection, onSnapshot, orderBy, limit, query } from 'firebase/firestore';
-import { firebase_db } from '../firebase/firebase';
 import UpperBar from './upperBar.js';
-import { Badge } from 'react-native-paper';
 import { AuthContext } from '../context/authContext/authContext.js';
-import CountDown from 'react-native-countdown-component';
-import { getUserData } from '../firebase/firestore.js';
+import { getUserData, updateUserCoins, claimFreeCoins } from '../firebase/firestore.js';
+import CountDownTimer from './countdown.js';
 
 export default function Coinshop({ navigation }) {
+  const [freeCoinsClaimed, setFreeCoinsClaimed] = useState(true)
+  // Timer References
+  const refTimer = useRef();
 
-  const { userLoggedIn, currentUser } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
-    if (!userLoggedIn) {
-        navigation.navigate('Main');
-    }
+  // For keeping a track on the Timer
+  const [timerEnd, setTimerEnd] = useState(false);
 
-     //Kolikoiden lisääminen pelajaan tilille kun DailyCoins-nappia on painettu                    
-     const handleMoreCoins = async () => {
-        const moreCoins = 125;
-        const newCoins = getUserData.coins + moreCoins;
+  const timerCallbackFunc = (timerFlag) => {
+    // Setting timer flag to finished
+    setTimerEnd(timerFlag);
+    setFreeCoinsClaimed(false)
+  };
 
-        Alert.alert('125 coins have been added to your account.');
-        return;
-      }
-    
-   //Ostaminen/kolikoiden lisääminen pelajaan tilille kun hinta-nappia on painettu                    
-    const handleBuyingCoins = async () => {    
-   /*    const purchasedCoins = 1000;
-      const newCoins = getUserData.coins + purchasedCoins;
+  const { userLoggedIn, currentUser, userData, setUserData } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
+  if (!userLoggedIn) {
+    navigation.navigate('Main');
+  }
 
-         // Update the user's data in Firestore
-         const userRef = doc(firebase_db, 'users', currentUser.uid);
-         await updateDoc(userRef, {
-             inventory: newInventory,
-             score: newScore,
-         });
-         const uData = await getUserData(currentUser.uid)
-         setUserData({ ...uData })*/
+  //Kolikoiden lisääminen pelajaan tilille kun DailyCoins-nappia on painettu                    
+  const handleFreeCoins = async () => {
+    const coins = userData.coins + 125;
+    await claimFreeCoins(currentUser.uid, coins, (Date.now() + 86400000))
 
-      Alert.alert('1000 coins have been added to your account.');
-      return;
-    }
-  
+    const uData = await getUserData(currentUser.uid)
+    setUserData({ ...uData })
 
-    return (   
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}> /*Tämä asettelu ScrollViewille poistaa valkoisen palkin näytöltä*/
+    setFreeCoinsClaimed(true)
+  }
+
+  //Ostaminen/kolikoiden lisääminen pelajaan tilille kun hinta-nappia on painettu                    
+  const handleBuyingCoins = async (coins) => {
+    const newCoinAmount = userData.coins + coins
+    await updateUserCoins(currentUser.uid, newCoinAmount)
+
+    const uData = await getUserData(currentUser.uid)
+    setUserData({ ...uData })
+  }
+
+  return (
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <LinearGradient
+        colors={['#b33939', '#4B0082']}
+        style={styles.container}
+      >
+
+        {/* UPPER BAR */}
+        <View style={styles.upperBarContainer}>
+          <UpperBar
+            userId={currentUser?.uid}
+            title="Dashboard"
+            onSettingsPress={() => console.log('Settings pressed')}
+          />
+        </View>
+
+        {/* COIN SHOP TITLE */}
         <LinearGradient
-          colors={['#b33939', '#4B0082']}
-          style={styles.container}
-        > 
-      
-         {/* UPPER BAR */}
-            <View style={styles.upperBarContainer}>
-                <UpperBar
-                    userId={currentUser?.uid} // Käyttäjän ID välitetään yläpalkille
-                    title="Dashboard"
-                    onSettingsPress={() => console.log('Settings pressed')}
-                />
-            </View>
-          
-          {/* COIN SHOP TITLE */}
-          <LinearGradient
-                colors={['#DC8828', '#FAD36A',]}
-                start={[0, 0]}
-                end={[1, 1]}
-                style={styles.coinShopContainer}
-              >                  
-              <Text style={styles.coinShopTitle}>Coinshop </Text>
-          </LinearGradient>  
-          <LinearGradient
-                colors={['#DC8828', '#FAD36A',]}
-                start={[0, 0]}
-                end={[1, 1]}
-                style={styles.yellowContainer}
-              >                  
-          </LinearGradient>      
-       
-          {/* TIME */}
-          <LinearGradient
-                colors={['#AA4120', '#691010',]}
-                start={[0, 0]}
-                end={[1, 1]}
-                style={styles.timeBoardContainer}
-              > 
-                 <CountDown                
-                 until={60 * 60}
-                 size={10}                 
-                 onFinish={() => alert('You have 125 Daily Coins')}
-                 digitTxtStyle={{color: '#ffffff'}}
-                 timeToShow={['H', 'M', 'S']}
-                 timeLabels={{ m: null, s: null}}
-                 showSeparator
-               />
-               
-               <Image source={require('../assets/clock.png')} style={styles.clockImage}/>
-               <Text style={styles.timeText}>8h 49min </Text>                
-          </LinearGradient>   
-          
-          
-      
-          {/* DAILYCOINSCONTAINER*/}
-                <LinearGradient
-                    colors={['#DC8828','#FAD36A']}
-                    start={[0, 0]}
-                    end={[1, 1]}
-                    style={styles.dailyCoinsContainer}
-                    >
-                    <Image source={require('../assets/coin.png')} style={styles.coinImage} />
-                    <Text style={styles.dailyCoinsText}>Daily Coins</Text>
-                    <TouchableOpacity
-                        onPress={handleMoreCoins} /*Tähän muokattava napin toimintoa*/
-                        style={styles.dailyCoinsButtonContainer}
-                        >
-                        <LinearGradient
-                            colors={['#DC8828', '#FAD36A']}
-                            start={[0, 1]}
-                            end={[0, 0]}
-                            style={styles.dailyCoinsButton}
-                            >
-                            <Text style={styles.dailyCoinsButtonText}>&#9654;</Text>
-                            <Badge style={styles.dailyCoinsBadge}>0</Badge>
-                        </LinearGradient>
-                    </TouchableOpacity>
-                </LinearGradient>
-
-          {/* COINSHOPBOARD */}     
-              <View style={styles.coinBoardContainer}>
-             <View style={styles.form}>
-         
-        {/* 1000 COINS*/}
-          <LinearGradient
-               colors={['#B64B43','#FF7E7E','#FFC0C0',]}
-               start={[0, 0]}
-               end={[1, 1]}
-               style={styles.buyingCoinsContainer}
-              >                            
-               <Image
-               source={require('../assets/coin1.png')}
-               style={styles.moneyImage}
-               />
-                <Image
-               source={require('../assets/coin.png')}
-               style={styles.oneCoinImage}
-                />
-               <Text style={styles.amountText}>1000</Text>
-                  <TouchableOpacity
-                        onPress={handleBuyingCoins} /*Tähän muokattava napin toimintoa*/
-                        style={{ width: '40%', left:48}}
-                        >
-                        <LinearGradient
-                           colors={['#2b711e','#8feb7d']}
-                           start={[0, 0]}
-                           end={[1, 1]}
-                           style={styles.buttonContainer}
-                            >
-                            <Text style={styles.buttonText}>0,99€</Text> 
-                        </LinearGradient>
-                    </TouchableOpacity>
-        </LinearGradient> 
-          
-          {/* 3000 COINS */}
+          colors={['#DC8828', '#FAD36A',]}
+          start={[0, 0]}
+          end={[1, 1]}
+          style={styles.coinShopContainer}
+        >
+          <Text style={styles.coinShopTitle}>Coinshop </Text>
+        </LinearGradient>
         <LinearGradient
-                colors={['#B64B43','#FF7E7E','#FFC0C0',]}
-                start={[0, 0]}
-                end={[1, 1]}
-                style={styles.buyingCoinsContainer}
-              >                           
-               <Image
-               source={require('../assets/coin2.png')}
-               style={styles.moneyImage}
-               />
-               <Image
-               source={require('../assets/coin.png')}
-               style={styles.oneCoinImage}
-                />
-               <Text style={styles.amountText}>3000</Text>
-               <TouchableOpacity
-               onPress={handleBuyingCoins}
-               style={{ width: '40%', left:48}}
-               >
-               <LinearGradient
-                colors={['#2b711e','#8feb7d']}
-                start={[0, 0]}
-                end={[1, 1]}
-                style={styles.buttonContainer}
-                >             
-                <Text style={styles.buttonText}>1,99€</Text>            
+          colors={['#DC8828', '#FAD36A',]}
+          start={[0, 0]}
+          end={[1, 1]}
+          style={styles.yellowContainer}
+        >
+        </LinearGradient>
+
+        {/* TIME */}
+        <LinearGradient
+          colors={['#AA4120', '#691010',]}
+          start={[0, 0]}
+          end={[1, 1]}
+          style={styles.timeBoardContainer}
+        >
+          <CountDownTimer
+          ref={refTimer}
+          timestamp={userData.freeCoinsTimer !== undefined && userData.freeCoinsTimer - Date.now() > 0 ? (userData.freeCoinsTimer - Date.now() ) / 1000 : 0}
+          timerCallback={timerCallbackFunc}
+          containerStyle={{
+            height: 56,
+            width: 120,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 35,
+            marginTop: -15,
+            marginLeft: 20,
+          }}
+          textStyle={{
+            fontSize: 24,
+            color: '#FFFFFF',
+            fontWeight: '500',
+            letterSpacing: 0.25,
+          }}
+        />
+
+          <Image source={require('../assets/clock.png')} style={styles.clockImage} />
+        </LinearGradient>
+
+        {/* DAILYCOINSCONTAINER*/}
+        <LinearGradient
+          colors={['#DC8828', '#FAD36A']}
+          start={[0, 0]}
+          end={[1, 1]}
+          style={styles.dailyCoinsContainer}
+        >
+          <Image source={require('../assets/coin.png')} style={styles.coinImage} />
+          <Text style={styles.dailyCoinsText}>Daily Coins</Text>
+          {freeCoinsClaimed ? (
+            <TouchableOpacity
+            onPress={handleFreeCoins}
+              style={styles.dailyCoinsButtonContainer}
+            >
+              <LinearGradient
+                colors={['#DC8828', '#FAD36A']}
+                start={[0, 1]}
+                end={[0, 0]}
+                style={styles.dailyCoinsButton}
+              >
+                <Text style={styles.dailyCoinsButtonText}>Wait</Text>
               </LinearGradient>
             </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={handleFreeCoins}
+              style={styles.dailyCoinsButtonContainer}
+            >
+              <LinearGradient
+                colors={['#DC8828', '#FAD36A']}
+                start={[0, 1]}
+                end={[0, 0]}
+                style={styles.dailyCoinsButton}
+              >
+                <Text style={styles.dailyCoinsButtonText}>Claim</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+
         </LinearGradient>
-          
-          {/* 7000 COINS */}
-        <LinearGradient
-               colors={['#B64B43','#FF7E7E','#FFC0C0',]}
-               start={[0, 0]}
-               end={[1, 1]}
-               style={styles.buyingCoinsContainer}
-              >                  
-          
+
+        {/* COINSHOPBOARD */}
+        <View style={styles.coinBoardContainer}>
+          <View style={styles.form}>
+
+            {/* 1000 COINS*/}
+            <LinearGradient
+              colors={['#B64B43', '#FF7E7E', '#FFC0C0',]}
+              start={[0, 0]}
+              end={[1, 1]}
+              style={styles.buyingCoinsContainer}
+            >
               <Image
-              source={require('../assets/coin3.png')}
-              style={styles.moneyImage}
+                source={require('../assets/coin1.png')}
+                style={styles.moneyImage}
               />
               <Image
-               source={require('../assets/coin.png')}
-               style={styles.oneCoinImage}
-               />
-               <Text style={styles.amountText}>7000</Text>
-               <TouchableOpacity
-                onPress={handleBuyingCoins}/*Tähän muokattava napin toimintoa*/
-               style={{ width: '40%', left:48}}
-               >
-               <LinearGradient
-                colors={[ '#2b711e','#8feb7d']}
-                start={[0, 0]}
-                end={[1, 1]}
-                style={styles.buttonContainer}
-                >             
-                <Text style={styles.buttonText}>4,99€</Text>            
-              </LinearGradient>
-            </TouchableOpacity>
-        </LinearGradient>
-          
-          {/* 15000 COINS*/}
-        <LinearGradient
-                colors={['#B64B43','#FF7E7E','#FFC0C0',]}
-                start={[0, 0]}
-                end={[1, 1]}
-                style={styles.buyingCoinsContainer}
-              >                            
-               <Image
+                source={require('../assets/coin.png')}
+                style={styles.oneCoinImage}
+              />
+              <Text style={styles.amountText}>1000</Text>
+              <TouchableOpacity
+                onPress={() => handleBuyingCoins(1000)}
+                style={{ width: '40%', left: 48 }}
+              >
+                <LinearGradient
+                  colors={['#2b711e', '#8feb7d']}
+                  start={[0, 0]}
+                  end={[1, 1]}
+                  style={styles.buttonContainer}
+                >
+                  <Text style={styles.buttonText}>0,99€</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </LinearGradient>
+
+            {/* 3000 COINS */}
+            <LinearGradient
+              colors={['#B64B43', '#FF7E7E', '#FFC0C0',]}
+              start={[0, 0]}
+              end={[1, 1]}
+              style={styles.buyingCoinsContainer}
+            >
+              <Image
+                source={require('../assets/coin2.png')}
+                style={styles.moneyImage}
+              />
+              <Image
+                source={require('../assets/coin.png')}
+                style={styles.oneCoinImage}
+              />
+              <Text style={styles.amountText}>3000</Text>
+              <TouchableOpacity
+                onPress={() => handleBuyingCoins(3000)}
+                style={{ width: '40%', left: 48 }}
+              >
+                <LinearGradient
+                  colors={['#2b711e', '#8feb7d']}
+                  start={[0, 0]}
+                  end={[1, 1]}
+                  style={styles.buttonContainer}
+                >
+                  <Text style={styles.buttonText}>1,99€</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </LinearGradient>
+
+            {/* 7000 COINS */}
+            <LinearGradient
+              colors={['#B64B43', '#FF7E7E', '#FFC0C0',]}
+              start={[0, 0]}
+              end={[1, 1]}
+              style={styles.buyingCoinsContainer}
+            >
+
+              <Image
+                source={require('../assets/coin3.png')}
+                style={styles.moneyImage}
+              />
+              <Image
+                source={require('../assets/coin.png')}
+                style={styles.oneCoinImage}
+              />
+              <Text style={styles.amountText}>7 000</Text>
+              <TouchableOpacity
+                onPress={() => handleBuyingCoins(7000)}
+                style={{ width: '40%', left: 48 }}
+              >
+                <LinearGradient
+                  colors={['#2b711e', '#8feb7d']}
+                  start={[0, 0]}
+                  end={[1, 1]}
+                  style={styles.buttonContainer}
+                >
+                  <Text style={styles.buttonText}>4,99€</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </LinearGradient>
+
+            {/* 15000 COINS*/}
+            <LinearGradient
+              colors={['#B64B43', '#FF7E7E', '#FFC0C0',]}
+              start={[0, 0]}
+              end={[1, 1]}
+              style={styles.buyingCoinsContainer}
+            >
+              <Image
                 source={require('../assets/coin4.png')}
                 style={styles.moneyImage}
-                />
-                 <Image
+              />
+              <Image
                 source={require('../assets/coin.png')}
-                 style={styles.oneCoinImage}
-                />
-                <Text style={styles.amountText}>15000</Text>
-                <TouchableOpacity
-                onPress={handleBuyingCoins}/*Tähän muokattava napin toimintoa*/
-                style={{ width: '40%', left:48}}
-                >
+                style={styles.oneCoinImage}
+              />
+              <Text style={styles.amountText}>15 000</Text>
+              <TouchableOpacity
+                onPress={() => handleBuyingCoins(15000)}
+                style={{ width: '40%', left: 48 }}
+              >
                 <LinearGradient
-                colors={['#2b711e','#8feb7d']}
-                start={[0, 0]}
-                end={[1, 1]}
-                style={styles.buttonContainer}
-                >             
-                <Text style={styles.buttonText}>9,99€</Text>            
-              </LinearGradient>
-            </TouchableOpacity>
-        </LinearGradient>
-        
-        {/* 40000 COINS*/}
-        <LinearGradient
-              colors={['#B64B43','#FF7E7E','#FFC0C0',]}
-               start={[0, 0]}
-               end={[1, 1]}
-               style={styles.buyingCoinsContainer}
-               >                  
-          
-               <Image
-               source={require('../assets/coin5.png')}
-               style={styles.moneyImage}
-               />
-               <Image
-               source={require('../assets/coin.png')}
-               style={styles.oneCoinImage}
-               />
-               <Text style={styles.amountText}>40000</Text>
-               <TouchableOpacity
-               onPress={handleBuyingCoins}/*Tähän muokattava napin toimintoa*/
-               style={{ width: '40%', left:48}}
-               >
-               <LinearGradient
-               colors={[ '#2b711e','#8feb7d']}
-               start={[0, 0]}
-               end={[1, 1]}
-               style={styles.buttonContainer}
-                >             
-                <Text style={styles.buttonText}>24,99€</Text>            
-              </LinearGradient>
-            </TouchableOpacity>
-        </LinearGradient>
+                  colors={['#2b711e', '#8feb7d']}
+                  start={[0, 0]}
+                  end={[1, 1]}
+                  style={styles.buttonContainer}
+                >
+                  <Text style={styles.buttonText}>9,99€</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </LinearGradient>
+
+            {/* 40000 COINS*/}
+            <LinearGradient
+              colors={['#B64B43', '#FF7E7E', '#FFC0C0',]}
+              start={[0, 0]}
+              end={[1, 1]}
+              style={styles.buyingCoinsContainer}
+            >
+
+              <Image
+                source={require('../assets/coin5.png')}
+                style={styles.moneyImage}
+              />
+              <Image
+                source={require('../assets/coin.png')}
+                style={styles.oneCoinImage}
+              />
+              <Text style={styles.amountText}>40 000</Text>
+              <TouchableOpacity
+                onPress={() => handleBuyingCoins(40000)}
+                style={{ width: '40%', left: 48 }}
+              >
+                <LinearGradient
+                  colors={['#2b711e', '#8feb7d']}
+                  start={[0, 0]}
+                  end={[1, 1]}
+                  style={styles.buttonContainer}
+                >
+                  <Text style={styles.buttonText}>24,99€</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </LinearGradient>
           </View>
-        </View>       
-        </LinearGradient>
-      </ScrollView>
-    );
-  }
+        </View>
+      </LinearGradient>
+    </ScrollView>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -299,13 +324,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#b33939',
   },
-  
+
   upperBarContainer: {
     width: '100%',
-},
+  },
 
   coinShopContainer: {
-    backgroundColor: ('#DC8828', '#E5A03D', '#FAD36A' ), 
+    backgroundColor: ('#DC8828', '#E5A03D', '#FAD36A'),
     padding: 10,
     borderRadius: 30,
     marginBottom: 20,
@@ -319,14 +344,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     marginBottom: 5,
-    textShadowColor: '#000000', 
-    textShadowOffset: { width: 4, height: 2 }, 
-    textShadowRadius: 1, 
-    left: 50, 
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 4, height: 2 },
+    textShadowRadius: 1,
+    left: 50,
     bottom: 15,
   },
 
-  yellowContainer: {  
+  yellowContainer: {
     padding: 10,
     marginBottom: 20,
     height: 35,
@@ -334,35 +359,34 @@ const styles = StyleSheet.create({
     bottom: 10,
   },
 
-  timeBoardContainer: {     
-    padding: 10, 
+  timeBoardContainer: {
+    padding: 10,
     height: 50,
     width: '40%',
     bottom: 50,
     borderColor: '#FAD36A',
     borderWidth: 2,
     borderRadius: 20,
-    
   },
-  
- timeText: {
+
+  timeText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#ffffff',
     marginBottom: 5,
-    textShadowColor: '#000000', 
-    textShadowOffset: { width: 4, height: 2 }, 
-    textShadowRadius: 1, 
-    left: 46,  
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 4, height: 2 },
+    textShadowRadius: 1,
+    left: 46,
   },
-  
+
   clockImage: {
     width: 60,
     height: 60,
-    margin: 12,
-    bottom: 55,
-    right: 55,
-  }, 
+    position:'absolute',
+    left: -20,
+    top: -10,
+  },
 
   dailyCoinsContainer: {
     width: '91%',
@@ -375,9 +399,9 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 2,
     borderRadius: 20,
-},
+  },
 
-dailyCoinsText: {
+  dailyCoinsText: {
     color: '#ffffff',
     fontSize: 24,
     fontWeight: 'bold',
@@ -385,49 +409,51 @@ dailyCoinsText: {
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     maxWidth: '50%',
-},
+  },
 
-coinImage: {
+  coinImage: {
     width: 50,
     height: 50,
     margin: 12,
-},
+  },
 
-dailyCoinsButtonContainer: {
+  dailyCoinsButtonContainer: {
     width: '25%',
     height: '70%',
     marginRight: '5%',
     borderColor: 'white',
     borderWidth: 2,
     borderRadius: 15
-},
+  },
 
-dailyCoinsButton: {
+  dailyCoinsButton: {
     flex: 1,
-    borderRadius: 5,    
+    borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: 'white',
     borderRadius: 15
-},
+  },
 
-dailyCoinsButtonText:{
-  color: '#ffffff',
-  fontSize: 34,
-  textShadowColor: '#000000',
-  textShadowOffset: { width: 2, height: 2 },
-  textShadowRadius: 1,
-  bottom: 5,
-},
+  dailyCoinsButtonText: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    lineHeight: 48,
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
+    bottom: 5,
+  },
 
-dailyCoinsBadge: {
-  position: 'absolute',
-  top: -5,
-  right: -5
-},
+  dailyCoinsBadge: {
+    position: 'absolute',
+    top: -5,
+    right: -5
+  },
 
   coinBoardContainer: {
-    backgroundColor: ('#54022A'), 
+    backgroundColor: ('#54022A'),
     width: '92%',
     height: 450,
     bottom: 40,
@@ -437,42 +463,42 @@ dailyCoinsBadge: {
   form: {
     width: '65%',
   },
-     
-    buyingCoinsContainer: { 
-     padding: 10,
-     borderRadius: 10,
-     marginBottom: 20,
-     height: 65,
-     width: '142%',
-     top: 20,
-     left:13,
-     borderColor: '#ffbaba',
-     borderWidth: 2,
-     borderRadius: 20,
+
+  buyingCoinsContainer: {
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 20,
+    height: 65,
+    width: '142%',
+    top: 20,
+    left: 13,
+    borderColor: '#ffbaba',
+    borderWidth: 2,
+    borderRadius: 20,
   },
 
   moneyImage: {
     width: 60,
     height: 60,
-    position: 'absolute',    
+    position: 'absolute',
     left: 10,
   },
-  
+
   oneCoinImage: {
     width: 20,
     height: 20,
     top: 10,
-    left: 88,   
-},
+    left: 88,
+  },
 
   amountText: {
-     color: '#ffffff',
-     fontSize: 16,
-     left: 115,
-     bottom: 10,
-     textShadowColor: '#000000',
-     textShadowOffset: { width: 1, height: 1 },
-     textShadowRadius: 1,
+    color: '#ffffff',
+    fontSize: 16,
+    left: 115,
+    bottom: 10,
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
   },
 
   buttonContainer: {
@@ -489,16 +515,14 @@ dailyCoinsBadge: {
     borderWidth: 2,
     borderRadius: 20,
   },
-  
+
   buttonText: {
     color: '#ffffff',
     fontSize: 18,
     fontWeight: 'bold',
-    textShadowColor: '#000000', 
-    textShadowOffset: { width: 2, height: 2 }, 
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
-    top: 5, 
+    top: 5,
   },
 });
-
-
