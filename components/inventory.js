@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { firebase_db } from '../firebase/firebase';
 import { AuthContext } from '../context/authContext/authContext';
+import { getUserData } from '../firebase/firestore.js';
 import { MotiView } from 'moti';
 import UpperBar from './upperBar';
 
@@ -43,7 +44,7 @@ function TickerList({ number, fontSize, index, reset }) {
         <View style={{ height: fontSize, overflow: "hidden" }}>
             <MotiView
                 animate={{
-                    translateY: -fontSize * 1.1 * (reset ? number : number + 40),
+                    translateY: -fontSize * 1.105 * (reset ? number : number + 40),
                 }}
                 transition={{
                     delay: (5 - index) * _stagger,
@@ -56,7 +57,7 @@ function TickerList({ number, fontSize, index, reset }) {
                         key={`number-${num}-${i}`}
                         style={{
                             fontSize: fontSize,
-                            lineHeight: fontSize * 1.1,
+                            lineHeight: fontSize * 1.105,
                             fontWeight: "900",
                             fontVariant: ["tabular-nums"],
                             color: reset ? '#FFD700' : '#FFFFFF',
@@ -71,7 +72,7 @@ function TickerList({ number, fontSize, index, reset }) {
 }
 
 function Ticker({ value = "00000", fontSize = 50 }) {
-  const paddedValue = value.toString().padStart(5, '0');
+  const paddedValue = value.toString().padStart(4, '0');
   const splitValue = paddedValue.split('');
     return (
         <View style={styles.numbersContainer}>
@@ -89,8 +90,7 @@ function Ticker({ value = "00000", fontSize = 50 }) {
 }
 
 export default function Inventory({ navigation }) {
-    const { userLoggedIn, currentUser } = useContext(AuthContext);
-    const [userData, setUserData] = useState(null);
+    const { userLoggedIn, currentUser, userData, setUserData } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [showReward, setShowReward] = useState(false);
     const [currentReward, setCurrentReward] = useState(0);
@@ -107,7 +107,7 @@ export default function Inventory({ navigation }) {
             doc(firebase_db, 'users', currentUser.uid),
             (doc) => {
                 if (doc.exists()) {
-                    setUserData(doc.data());
+                    setUserData({ ...doc.data()});
                 }
                 setLoading(false);
             }
@@ -133,6 +133,7 @@ export default function Inventory({ navigation }) {
                 ...userData.inventory,
                 [boxType]: userData.inventory[boxType] - 1,
             };
+            console.log(newInventory)
 
             const newScore = userData.score + pointsWon;
 
@@ -149,6 +150,8 @@ export default function Inventory({ navigation }) {
                 inventory: newInventory,
                 score: newScore,
             });
+            const uData = await getUserData(currentUser.uid)
+            setUserData({ ...uData })
 
             // Close the modal after showing the reward
             setTimeout(() => {
@@ -255,6 +258,10 @@ export default function Inventory({ navigation }) {
 }
 
 const styles = StyleSheet.create({ 
+    container: {
+        flex: 1,
+        overflow: 'hidden',
+    },
     boxCard: {
         margin: 20,
         padding: 15,

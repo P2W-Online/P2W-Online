@@ -36,7 +36,7 @@ export default function Header({ navigation }) {
     fontSize: 16,
     textAlign: 'center',
     textShadowColor: '#000000',
-    textShadowOffset: { width: -1, height: 1 },
+    textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
   };
 
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 40,
     textShadowColor: '#000000',
-    textShadowOffset: { width: -4, height: 2 },
+    textShadowOffset: { width: 4, height: 2 },
     textShadowRadius: 1,
     marginTop: 100, 
   },
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textShadowColor: '#000000',
-    textShadowOffset: { width: -2, height: 2 },
+    textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
   },
 

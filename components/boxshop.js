@@ -47,12 +47,14 @@ export default function BoxShop({ navigation }) {
                 setUserData({ ...uData })
             } else {
                 console.log("virhe: ", osto)
-            }
+            } 
         }
     }
     const freeBox = async () => {
         // Asetetaan 24h cooldown ilmaiselle lootboxille
         await claimFreeLootbox(currentUser.uid, userData, (Date.now() + 86400000))
+        const uData = await getUserData(currentUser.uid)
+        setUserData({ ...uData })
     }
     return (
         <LinearGradient
@@ -474,7 +476,6 @@ const styles = StyleSheet.create({
     lootBoxCardsContainer: {
         //flex: 1,
         overflow: 'auto'
-
     },
     lootBoxCardContainer: {
         //flex: 1,
@@ -482,7 +483,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         height: 'auto',
-
     },
     lootBoxCard: {
         justifyContent: 'space-evenly',
