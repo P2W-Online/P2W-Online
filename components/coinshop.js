@@ -6,34 +6,44 @@ import { firebase_db } from '../firebase/firebase';
 import UpperBar from './upperBar.js';
 import { Badge } from 'react-native-paper';
 import { AuthContext } from '../context/authContext/authContext.js';
-//import CountDown from 'react-native-countdown-component';
+import CountDown from 'react-native-countdown-component';
+import { getUserData } from '../firebase/firestore.js';
 
 export default function Coinshop({ navigation }) {
+
   const { userLoggedIn, currentUser } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
     if (!userLoggedIn) {
         navigation.navigate('Main');
     }
 
      //Kolikoiden lisääminen pelajaan tilille kun DailyCoins-nappia on painettu                    
-   // const handleMoreCoins = {  
-      
+     const handleMoreCoins = async () => {
+        const moreCoins = 125;
+        const newCoins = getUserData.coins + moreCoins;
 
-                                      
-    //}
+        Alert.alert('125 coins have been added to your account.');
+        return;
+      }
     
+   //Ostaminen/kolikoiden lisääminen pelajaan tilille kun hinta-nappia on painettu                    
+    const handleBuyingCoins = async () => {    
+   /*    const purchasedCoins = 1000;
+      const newCoins = getUserData.coins + purchasedCoins;
 
+         // Update the user's data in Firestore
+         const userRef = doc(firebase_db, 'users', currentUser.uid);
+         await updateDoc(userRef, {
+             inventory: newInventory,
+             score: newScore,
+         });
+         const uData = await getUserData(currentUser.uid)
+         setUserData({ ...uData })*/
 
-    //Ostaminen/kolikoiden lisääminen pelajaan tilille kun hinta-nappia on painettu                    
-   // const handleBuying = {  
-      
-
-                                      
-    //}
-    
-    const handleBuying = () => {
-      // Tämä ei tee mitään vielä
+      Alert.alert('1000 coins have been added to your account.');
+      return;
     }
-    
+  
+
     return (   
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}> /*Tämä asettelu ScrollViewille poistaa valkoisen palkin näytöltä*/
         <LinearGradient
@@ -65,9 +75,7 @@ export default function Coinshop({ navigation }) {
                 end={[1, 1]}
                 style={styles.yellowContainer}
               >                  
-          </LinearGradient>
-
-       
+          </LinearGradient>      
        
           {/* TIME */}
           <LinearGradient
@@ -76,17 +84,15 @@ export default function Coinshop({ navigation }) {
                 end={[1, 1]}
                 style={styles.timeBoardContainer}
               > 
-                 {/* <CountDown
-                 until={60 * 10 + 30}
+                 <CountDown                
+                 until={60 * 60}
                  size={10}                 
-                 onFinish={() => alert('Finished')}
+                 onFinish={() => alert('You have 125 Daily Coins')}
                  digitTxtStyle={{color: '#ffffff'}}
                  timeToShow={['H', 'M', 'S']}
                  timeLabels={{ m: null, s: null}}
                  showSeparator
-               /> */}
-
-
+               />
                
                <Image source={require('../assets/clock.png')} style={styles.clockImage}/>
                <Text style={styles.timeText}>8h 49min </Text>                
@@ -94,172 +100,197 @@ export default function Coinshop({ navigation }) {
           
           
       
-              {/* COINSHOPBOARD */}     
-              <View style={styles.coinBoardContainer}>
-              <View style={styles.form}>
-            
-            {/* 1000 COINS*/}
-            <LinearGradient
-                  colors={['#FF7E7E','#B64B43','#FFC0C0']}
-                  start={[0, 0]}
-                  end={[1, 1]}
-                  style={styles.buyingCoinsContainer}
-                  >                            
-                  <Image
-                  source={require('../assets/coin1.png')}
-                  style={styles.moneyImage}
-                  />
-                    <Image
-                  source={require('../assets/coin.png')}
-                  style={styles.oneCoinImage}
-                    />
-                  <Text style={styles.amountText}>1000</Text>
-                  <TouchableOpacity
-                    onPress={handleBuying} /*Tähän muokattava napin toimintoa*/
-                    style={{ width: '40%', left:48}}
+          {/* DAILYCOINSCONTAINER*/}
+                <LinearGradient
+                    colors={['#DC8828','#FAD36A']}
+                    start={[0, 0]}
+                    end={[1, 1]}
+                    style={styles.dailyCoinsContainer}
                     >
-                    <LinearGradient
-                    colors={['#8feb7d', '#2b711e']}
-                    start={[0, 0]}
-                    end={[1, 1]}
-                    style={styles.buttonContainer}
-                    >             
-                    <Text style={styles.buttonText}>0,99€</Text>            
-                  </LinearGradient>
-                </TouchableOpacity>
-            </LinearGradient> 
-              
-              {/* 3000 COINS */}
-            <LinearGradient
-                    colors={['#FF7E7E','#B64B43', '#FFC0C0']}
-                    start={[0, 0]}
-                    end={[1, 1]}
-                    style={styles.buyingCoinsContainer}
-                  >                           
-                  <Image
-                  source={require('../assets/coin2.png')}
-                  style={styles.moneyImage}
-                  />
-                  <Image
-                  source={require('../assets/coin.png')}
-                  style={styles.oneCoinImage}
-                    />
-                  <Text style={styles.amountText}>3000</Text>
-                  <TouchableOpacity
-                  onPress={() => navigation.navigate('Coinshop')} /*Tähän muokattava napin toimintoa*/
-                  style={{ width: '40%', left:48}}
-                  >
-                  <LinearGradient
-                    colors={['#8feb7d', '#2b711e']}
-                    start={[0, 0]}
-                    end={[1, 1]}
-                    style={styles.buttonContainer}
-                    >             
-                    <Text style={styles.buttonText}>1,99€</Text>            
-                  </LinearGradient>
-                </TouchableOpacity>
-            </LinearGradient>
-              
-              {/* 7000 COINS */}
-            <LinearGradient
-                  colors={['#FF7E7E','#B64B43', '#FFC0C0']}
-                  start={[0, 0]}
-                  end={[1, 1]}
-                  style={styles.buyingCoinsContainer}
-                  >                  
-              
-                  <Image
-                  source={require('../assets/coin3.png')}
-                  style={styles.moneyImage}
-                  />
-                  <Image
-                  source={require('../assets/coin.png')}
-                  style={styles.oneCoinImage}
-                  />
-                  <Text style={styles.amountText}>7000</Text>
-                  <TouchableOpacity
-                  onPress={() => navigation.navigate('Coinshop')} /*Tähän muokattava napin toimintoa*/
-                  style={{ width: '40%', left:48}}
-                  >
-                  <LinearGradient
-                    colors={['#8feb7d', '#2b711e']}
-                    start={[0, 0]}
-                    end={[1, 1]}
-                    style={styles.buttonContainer}
-                    >             
-                    <Text style={styles.buttonText}>4,99€</Text>            
-                  </LinearGradient>
-                </TouchableOpacity>
-            </LinearGradient>
-              
-              {/* 15000 COINS*/}
-            <LinearGradient
-                    colors={['#FF7E7E','#B64B43', '#FFC0C0']}
-                    start={[0, 0]}
-                    end={[1, 1]}
-                    style={styles.buyingCoinsContainer}
-                  >                            
-                  <Image
-                    source={require('../assets/coin4.png')}
-                    style={styles.moneyImage}
-                    />
-                    <Image
-                    source={require('../assets/coin.png')}
-                    style={styles.oneCoinImage}
-                    />
-                    <Text style={styles.amountText}>15000</Text>
+                    <Image source={require('../assets/coin.png')} style={styles.coinImage} />
+                    <Text style={styles.dailyCoinsText}>Daily Coins</Text>
                     <TouchableOpacity
-                    onPress={() => navigation.navigate('Coinshop')} /*Tähän muokattava napin toimintoa*/
-                    style={{ width: '40%', left:48}}
-                    >
-                    <LinearGradient
-                    colors={['#8feb7d', '#2b711e']}
-                    start={[0, 0]}
-                    end={[1, 1]}
-                    style={styles.buttonContainer}
-                    >             
-                    <Text style={styles.buttonText}>9,99€</Text>            
-                  </LinearGradient>
-                </TouchableOpacity>
-            </LinearGradient>
-            
-            {/* 40000 COINS*/}
-            <LinearGradient
-                  colors={['#FF7E7E','#B64B43', '#FFC0C0']}
-                  start={[0, 0]}
-                  end={[1, 1]}
-                  style={styles.buyingCoinsContainer}
-                  >                  
-              
-                  <Image
-                  source={require('../assets/coin5.png')}
-                  style={styles.moneyImage}
-                  />
-                  <Image
-                  source={require('../assets/coin.png')}
-                  style={styles.oneCoinImage}
-                  />
-                  <Text style={styles.amountText}>40000</Text>
+                        onPress={handleMoreCoins} /*Tähän muokattava napin toimintoa*/
+                        style={styles.dailyCoinsButtonContainer}
+                        >
+                        <LinearGradient
+                            colors={['#DC8828', '#FAD36A']}
+                            start={[0, 1]}
+                            end={[0, 0]}
+                            style={styles.dailyCoinsButton}
+                            >
+                            <Text style={styles.dailyCoinsButtonText}>&#9654;</Text>
+                            <Badge style={styles.dailyCoinsBadge}>0</Badge>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                </LinearGradient>
+
+          {/* COINSHOPBOARD */}     
+              <View style={styles.coinBoardContainer}>
+             <View style={styles.form}>
+         
+        {/* 1000 COINS*/}
+          <LinearGradient
+               colors={['#B64B43','#FF7E7E','#FFC0C0',]}
+               start={[0, 0]}
+               end={[1, 1]}
+               style={styles.buyingCoinsContainer}
+              >                            
+               <Image
+               source={require('../assets/coin1.png')}
+               style={styles.moneyImage}
+               />
+                <Image
+               source={require('../assets/coin.png')}
+               style={styles.oneCoinImage}
+                />
+               <Text style={styles.amountText}>1000</Text>
                   <TouchableOpacity
-                  onPress={() => navigation.navigate('Coinshop')} /*Tähän muokattava napin toimintoa*/
-                  style={{ width: '40%', left:48}}
-                  >
-                  <LinearGradient
-                  colors={['#8feb7d', '#2b711e']}
-                  start={[0, 0]}
-                  end={[1, 1]}
-                  style={styles.buttonContainer}
-                    >             
-                    <Text style={styles.buttonText}>24,99€</Text>            
-                  </LinearGradient>
-                </TouchableOpacity>
-            </LinearGradient>
-              </View>
-            </View>       
-            </LinearGradient>
-          </ScrollView>
-        );
-    }
+                        onPress={handleBuyingCoins} /*Tähän muokattava napin toimintoa*/
+                        style={{ width: '40%', left:48}}
+                        >
+                        <LinearGradient
+                           colors={['#2b711e','#8feb7d']}
+                           start={[0, 0]}
+                           end={[1, 1]}
+                           style={styles.buttonContainer}
+                            >
+                            <Text style={styles.buttonText}>0,99€</Text> 
+                        </LinearGradient>
+                    </TouchableOpacity>
+        </LinearGradient> 
+          
+          {/* 3000 COINS */}
+        <LinearGradient
+                colors={['#B64B43','#FF7E7E','#FFC0C0',]}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={styles.buyingCoinsContainer}
+              >                           
+               <Image
+               source={require('../assets/coin2.png')}
+               style={styles.moneyImage}
+               />
+               <Image
+               source={require('../assets/coin.png')}
+               style={styles.oneCoinImage}
+                />
+               <Text style={styles.amountText}>3000</Text>
+               <TouchableOpacity
+               onPress={handleBuyingCoins}
+               style={{ width: '40%', left:48}}
+               >
+               <LinearGradient
+                colors={['#2b711e','#8feb7d']}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={styles.buttonContainer}
+                >             
+                <Text style={styles.buttonText}>1,99€</Text>            
+              </LinearGradient>
+            </TouchableOpacity>
+        </LinearGradient>
+          
+          {/* 7000 COINS */}
+        <LinearGradient
+               colors={['#B64B43','#FF7E7E','#FFC0C0',]}
+               start={[0, 0]}
+               end={[1, 1]}
+               style={styles.buyingCoinsContainer}
+              >                  
+          
+              <Image
+              source={require('../assets/coin3.png')}
+              style={styles.moneyImage}
+              />
+              <Image
+               source={require('../assets/coin.png')}
+               style={styles.oneCoinImage}
+               />
+               <Text style={styles.amountText}>7000</Text>
+               <TouchableOpacity
+                onPress={handleBuyingCoins}/*Tähän muokattava napin toimintoa*/
+               style={{ width: '40%', left:48}}
+               >
+               <LinearGradient
+                colors={[ '#2b711e','#8feb7d']}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={styles.buttonContainer}
+                >             
+                <Text style={styles.buttonText}>4,99€</Text>            
+              </LinearGradient>
+            </TouchableOpacity>
+        </LinearGradient>
+          
+          {/* 15000 COINS*/}
+        <LinearGradient
+                colors={['#B64B43','#FF7E7E','#FFC0C0',]}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={styles.buyingCoinsContainer}
+              >                            
+               <Image
+                source={require('../assets/coin4.png')}
+                style={styles.moneyImage}
+                />
+                 <Image
+                source={require('../assets/coin.png')}
+                 style={styles.oneCoinImage}
+                />
+                <Text style={styles.amountText}>15000</Text>
+                <TouchableOpacity
+                onPress={handleBuyingCoins}/*Tähän muokattava napin toimintoa*/
+                style={{ width: '40%', left:48}}
+                >
+                <LinearGradient
+                colors={['#2b711e','#8feb7d']}
+                start={[0, 0]}
+                end={[1, 1]}
+                style={styles.buttonContainer}
+                >             
+                <Text style={styles.buttonText}>9,99€</Text>            
+              </LinearGradient>
+            </TouchableOpacity>
+        </LinearGradient>
+        
+        {/* 40000 COINS*/}
+        <LinearGradient
+              colors={['#B64B43','#FF7E7E','#FFC0C0',]}
+               start={[0, 0]}
+               end={[1, 1]}
+               style={styles.buyingCoinsContainer}
+               >                  
+          
+               <Image
+               source={require('../assets/coin5.png')}
+               style={styles.moneyImage}
+               />
+               <Image
+               source={require('../assets/coin.png')}
+               style={styles.oneCoinImage}
+               />
+               <Text style={styles.amountText}>40000</Text>
+               <TouchableOpacity
+               onPress={handleBuyingCoins}/*Tähän muokattava napin toimintoa*/
+               style={{ width: '40%', left:48}}
+               >
+               <LinearGradient
+               colors={[ '#2b711e','#8feb7d']}
+               start={[0, 0]}
+               end={[1, 1]}
+               style={styles.buttonContainer}
+                >             
+                <Text style={styles.buttonText}>24,99€</Text>            
+              </LinearGradient>
+            </TouchableOpacity>
+        </LinearGradient>
+          </View>
+        </View>       
+        </LinearGradient>
+      </ScrollView>
+    );
+  }
 
 const styles = StyleSheet.create({
   container: {
@@ -440,7 +471,7 @@ dailyCoinsBadge: {
      left: 115,
      bottom: 10,
      textShadowColor: '#000000',
-     textShadowOffset: { width: -1, height: 1 },
+     textShadowOffset: { width: 1, height: 1 },
      textShadowRadius: 1,
   },
 
@@ -464,8 +495,10 @@ dailyCoinsBadge: {
     fontSize: 18,
     fontWeight: 'bold',
     textShadowColor: '#000000', 
-    textShadowOffset: { width: -2, height: 2 }, 
+    textShadowOffset: { width: 2, height: 2 }, 
     textShadowRadius: 1,
     top: 5, 
   },
 });
+
+

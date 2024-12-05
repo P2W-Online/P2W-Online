@@ -70,7 +70,6 @@ export default function UpperBar({ userId, onSettingsPress, title }) {
     }
   };
 
-
   return (
     <View style={styles.headerContainer}>
     {/* Pelaajan pisteet */}
@@ -83,7 +82,7 @@ export default function UpperBar({ userId, onSettingsPress, title }) {
         <Text style={styles.scoreText}>{points.toLocaleString()}</Text>
       </View>
     </LinearGradient>
-   
+
     {/* Pelaajan kolikot */}
     <LinearGradient
       colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']} 
