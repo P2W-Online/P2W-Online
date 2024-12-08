@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     textShadowColor: '#000000',
-    textShadowOffset: { width: -2, height: 2 },
+    textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     marginBottom: 20,
     borderBottomWidth: 1,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 10,
     textShadowColor: '#000000',
-    textShadowOffset: { width: -1, height: 1 },
+    textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
   },
   slider: {
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginTop: 10,
     textShadowColor: '#000000',
-    textShadowOffset: { width: -1, height: 1 },
+    textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
   },
 });
