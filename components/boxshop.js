@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
-import { View, Text, Button, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Modal } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'
+import { Audio } from 'expo-av';
 import { Badge } from 'react-native-paper';
 import UpperBar from './upperBar.js';
 import { AuthContext } from '../context/authContext/authContext.js';
 import { ScrollView } from 'react-native';
-import { buyLootBox, getUserData, claimFreeLootbox } from '../firebase/firestore.js';
+import { buyLootBox, getUserData, claimFreeLootbox, claimFreeSuperLootbox } from '../firebase/firestore.js';
 
 const BOX_PRICES = {
     commonBox: {
@@ -30,31 +31,64 @@ const BOX_PRICES = {
 
 export default function BoxShop({ navigation }) {
     const { userLoggedIn, currentUser, userData, setUserData } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
+    const [sound, setSound] = useState(null)
+    const [showAd, setShowAd] = useState(false)
+
     if (!userLoggedIn) {
         navigation.navigate('Main');
     }
+
+    // Ladataan ja toistetaan ääni, kun painetaan nappia ja vapautetaan lopuksi. 
+    const playSound = async () => {
+        const { sound } = await Audio.Sound.createAsync(
+            require('../assets/coins.mp3')
+        );
+        setSound(sound);
+        await sound.playAsync();
+    };
+
+    useEffect(() => {
+        return sound
+            ? () => {
+                sound.unloadAsync();
+            }
+            : undefined;
+    }, [sound]);
+
     const buy = async (box, amount, price) => {
         //console.log(userData)
         if (price > userData.coins) {
             console.log("Ei rahaa")
         } else {
             let newCoinsValue = userData.coins - price
-            //const buy = buyLootBox(currentUser.uid, userData, box, amount, newCoinsValue)
+            await playSound();
             const osto = await buyLootBox(currentUser.uid, userData, box, amount, newCoinsValue)
-            console.log(osto)
             if (osto == "success") {
                 const uData = await getUserData(currentUser.uid)
                 setUserData({ ...uData })
             } else {
                 console.log("virhe: ", osto)
-            } 
+            }
         }
     }
     const freeBox = async () => {
         // Asetetaan 24h cooldown ilmaiselle lootboxille
         await claimFreeLootbox(currentUser.uid, userData, (Date.now() + 86400000))
+        await playSound();
         const uData = await getUserData(currentUser.uid)
         setUserData({ ...uData })
+    }
+    const claimSupeBonus = async () => {
+        setShowAd(true)
+        // Asetetaan 24h cooldown ilmaiselle SuperLootBoxille
+        await claimFreeSuperLootbox(currentUser.uid, userData, (Date.now() + 86400000))
+        await playSound();
+        const uData = await getUserData(currentUser.uid)
+        setUserData({ ...uData })
+
+        setTimeout(() => {
+            setShowAd(false)
+        }, 5000)
     }
     return (
         <LinearGradient
@@ -83,7 +117,20 @@ export default function BoxShop({ navigation }) {
                     <Text style={styles.freeLootBoxText}>Daily Bonus</Text>
 
                     {/* Jos laatikko on haettu viimeisen 24h aikana, ei anneta pelaajan hakea uutta laatikkoa, vaan muutetaan napin tekstiksi Wait */}
-                    {parseInt(userData.freeLootboxTimer) <= Date.now() ? (
+                    {userData.freeLootboxTimer >= Date.now() && userData.freeLootboxTimer !== undefined ? (
+                        <TouchableOpacity
+                            style={styles.freeLootBox1ButtonContainer}
+                        >
+                            <LinearGradient
+                                colors={['#DC8828', '#FAD36A']}
+                                start={[0, 1]}
+                                end={[0, 0]}
+                                style={styles.freeLootBoxButton}
+                            >
+                                <Text style={styles.freeLootBoxButtonText}>Wait</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    ) : (
                         <TouchableOpacity
                             onPress={() => freeBox()}
                             style={styles.freeLootBox1ButtonContainer}
@@ -100,19 +147,6 @@ export default function BoxShop({ navigation }) {
                                 </>
                             </LinearGradient>
                         </TouchableOpacity>
-                    ) : (
-                        <TouchableOpacity
-                            style={styles.freeLootBox1ButtonContainer}
-                        >
-                            <LinearGradient
-                                colors={['#DC8828', '#FAD36A']}
-                                start={[0, 1]}
-                                end={[0, 0]}
-                                style={styles.freeLootBoxButton}
-                            >
-                                <Text style={styles.freeLootBoxButtonText}>Wait</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
                     )}
 
                 </LinearGradient>
@@ -127,18 +161,34 @@ export default function BoxShop({ navigation }) {
                 >
                     <Image source={require('../assets/chest2.png')} style={styles.chest1Image} />
                     <Text style={styles.freeLootBoxText}>Super Bonus</Text>
-                    <TouchableOpacity
-                        onPress={() => console.log("lootbox2")}
-                        style={styles.freeLootBox2ButtonContainer}
-                    ><LinearGradient
-                        colors={['#DC8828', '#FAD36A']}
-                        start={[0, 1]}
-                        end={[0, 0]}
-                        style={styles.freeLootBoxButton}
-                    >
-                            <Text style={styles.freeLootBoxButtonText}>&#9654;</Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
+                    {/* Jos laatikko on haettu viimeisen 24h aikana, ei anneta pelaajan hakea uutta laatikkoa, vaan muutetaan napin tekstiksi Wait */}
+                    {parseInt(userData.freeSuperLootboxTimer) >= Date.now() && userData.freeSuperLootboxTimer !== undefined ? (
+                        <TouchableOpacity
+                            onPress={() => console.log('No box to claim')}
+                            style={styles.freeLootBox2ButtonContainer}
+                        ><LinearGradient
+                            colors={['#DC8828', '#FAD36A']}
+                            start={[0, 1]}
+                            end={[0, 0]}
+                            style={styles.freeLootBoxButton}
+                        >
+                                <Text style={styles.freeLootBoxButtonText}>Wait</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity
+                            onPress={claimSupeBonus}
+                            style={styles.freeLootBox2ButtonContainer}
+                        ><LinearGradient
+                            colors={['#DC8828', '#FAD36A']}
+                            start={[0, 1]}
+                            end={[0, 0]}
+                            style={styles.freeLootBoxButton}
+                        >
+                                <Text style={styles.freeLootBoxButtonText}>&#9654;</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    )}
                 </LinearGradient>
             </View>
 
@@ -375,6 +425,42 @@ export default function BoxShop({ navigation }) {
                     </LinearGradient>
                 </View>
             </ScrollView>
+
+            {/* Opening Animation Modal */}
+            <Modal
+                visible={showAd}
+                transparent={true}
+                animationType="fade"
+                style={{ width: '80%', height: '60%', backgroundColor: 'white' }}
+            >
+                <View style={styles.modalContainer}>
+                    <LinearGradient
+                        colors={['rgba(0,0,0,0.9)', 'rgba(0,0,0,0.95)']}
+                        style={styles.modalContent}
+                    >
+                        <View style={styles.adContainer}>
+                            <View style={{
+                                flex: 2,
+                            }}>
+                                <Image source={require('../assets/chestOpen1.png')} style={styles.adChestImage} />
+                            </View>
+                            <View style={styles.adItemInfoContainer}>
+                                <Image source={require('../assets/coin.png')}
+                                    style={styles.adItemInfoImage} />
+                                <Text style={styles.adItemInfoText}>40 000</Text>
+                            </View>
+                            <LinearGradient
+                                colors={['#2EA944', '#68E74F']}
+                                start={[0, 1]}
+                                end={[0, 0]}
+                                style={styles.adItemPriceContainer}
+                            >
+                                <Text style={styles.adItemPriceText}>24,99€</Text>
+                            </LinearGradient>
+                        </View>
+                    </LinearGradient>
+                </View>
+            </Modal>
         </LinearGradient>
     )
 }
@@ -542,5 +628,76 @@ const styles = StyleSheet.create({
         textShadowRadius: 1,
         marginLeft: 5
     },
-
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.7)',
+    },
+    modalContent: {
+        width: '80%',
+        height: '80%',
+        padding: 30,
+        borderRadius: 20,
+        alignItems: 'center',
+        borderWidth: 3,
+        borderColor: '#FFD700',
+    },
+    adContainer: {
+        //color: '#FFD700',
+        color: 'white',
+        fontSize: 32,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textShadowColor: '#000',
+        textShadowOffset: { width: 2, height: 2 },
+        textShadowRadius: 3,
+    },
+    adChestImage: {
+        height: '100%',
+        aspectRatio: 1 / 1,
+        marginTop: 40
+    },
+    adItemInfoContainer: {
+        flex: 2,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        width: '100%',
+        textAlign: 'center',
+    },
+    adItemInfoImage: {
+        height: 40,
+        width: 40,
+        alignSelf: 'flex-end',
+        marginBottom: 25,
+        marginRight: -40,
+        marginLeft: -20,
+    },
+    adItemInfoText: {
+        color: '#ffffff',
+        fontSize: 40,
+        fontWeight: 'bold',
+        textShadowColor: '#000000',
+        textShadowOffset: { width: 2, height: 2 },
+        textShadowRadius: 1,
+        lineHeight: 48,
+        paddingBottom: 20,
+        textAlign: 'center',
+        alignSelf: 'flex-end'
+    },
+    adItemPriceText: {
+        color: '#ffffff',
+        fontSize: 40,
+        fontWeight: 'bold',
+        textShadowColor: '#000000',
+        textShadowOffset: { width: 2, height: 2 },
+        textShadowRadius: 1,
+    },
+    adItemInfoContainer: {
+        flex: 1,
+        borderRadius: 55,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 });

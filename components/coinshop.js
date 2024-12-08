@@ -1,6 +1,7 @@
 import React, { useState, useContext, useRef } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Audio } from 'expo-av';
 import UpperBar from './upperBar.js';
 import { AuthContext } from '../context/authContext/authContext.js';
 import { getUserData, updateUserCoins, claimFreeCoins } from '../firebase/firestore.js';
@@ -8,6 +9,7 @@ import CountDownTimer from './countdown.js';
 
 export default function Coinshop({ navigation }) {
   const [freeCoinsClaimed, setFreeCoinsClaimed] = useState(true)
+  const [sound, setSound] = useState(null); //Tila äänen hallintaan.
   // Timer References
   const refTimer = useRef();
 
@@ -36,8 +38,27 @@ export default function Coinshop({ navigation }) {
     setFreeCoinsClaimed(true)
   }
 
+   // Ladataan ja toistetaan ääni, kun painetaan nappia ja vapautetaan lopuksi. 
+   const playSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../assets/coins.mp3') 
+    );
+    setSound(sound);
+    await sound.playAsync(); 
+  };
+
+  React.useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync(); 
+        }
+      : undefined;
+  }, [sound]);
+
+
   //Ostaminen/kolikoiden lisääminen pelajaan tilille kun hinta-nappia on painettu                    
   const handleBuyingCoins = async (coins) => {
+    await playSound();
     const newCoinAmount = userData.coins + coins
     await updateUserCoins(currentUser.uid, newCoinAmount)
 

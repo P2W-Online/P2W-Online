@@ -50,9 +50,9 @@ const Scoreboard = () => {
   const podiumPlayers = users.slice(0, 3);
 
   const podiumColors = [
-    ['#FFD700', '#DAA520'], // Gold
-    ['#87CEEB', '#4682B4'], // Silver
-    ['#CD7F32', '#8B4513'], // Bronze
+    ['#DAA520', '#FFD700'], // Gold
+    ['#4682B4', '#87CEEB'], // Silver
+    ['#8B4513', '#CD7F32'], // Bronze
   ];
 
   const renderPodiumPlayer = (playerIndex, position) => {
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     textShadowColor: '#000000',
-    textShadowOffset: { width: -2, height: 2 },
+    textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     marginBottom: 20,
     borderBottomWidth: 1,
@@ -287,8 +287,8 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 22.5,
     marginBottom: 8,
-    borderWidth: 2,           // Lisätty border
-    borderColor: '#FFFFF',   // Valkoinen border
+    borderWidth: 2,
+    borderColor: '#FFFFF',
     backgroundColor: '#1E90FF',
   },
   playerIconSmall: {
@@ -307,12 +307,14 @@ const styles = StyleSheet.create({
     textShadowColor: '#000000',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
-    
   },
   playerScore: {
     color: '#FFFFFF',
     fontSize: 24,
     fontWeight: 'bold',
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
   },
   medalIcon: {
     width: 34,
@@ -329,11 +331,11 @@ const styles = StyleSheet.create({
   },
   headerText: {
     flex: 1,
-    color: '#000',
+    color: '#FFFFFF',
     fontSize: 24,
     fontWeight: 'bold',
-    textShadowColor: '#FFFFFF',
-    textShadowOffset: { width: 1, height: 1 },
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     textAlign: 'left',
   },

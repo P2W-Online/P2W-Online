@@ -1,5 +1,5 @@
 import React, { useContext }from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AuthContext } from '../context/authContext/authContext.js';
 import { doSignOut } from '../firebase/auth';
@@ -51,6 +51,7 @@ export default function Header({ navigation }) {
   };
 
   return (
+    
     <LinearGradient
       colors={['#b33939', '#4B0082']} // TAUSTA VÄRIN LAITTO GRADIENTILLA
       style={styles.container}

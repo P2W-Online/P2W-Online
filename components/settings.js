@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 10,
     textShadowColor: '#000000',
-    textShadowOffset: { width: -1, height: 1 },
+    textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
   },
   slider: {
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginTop: 10,
     textShadowColor: '#000000',
-    textShadowOffset: { width: -1, height: 1 },
+    textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
   },
   scrollView: {
