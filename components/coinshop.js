@@ -321,6 +321,7 @@ const styles = StyleSheet.create({
 
   },
   coinShopTitle: {
+    fontFamily: 'Nabla-Regular',
     fontSize: 32,
     fontWeight: 'bold',
     color: '#ffffff',
@@ -385,6 +386,7 @@ const styles = StyleSheet.create({
   },
 
   dailyCoinsText: {
+    fontFamily: 'Nabla-Regular',
     color: '#ffffff',
     fontSize: 24,
     fontWeight: 'bold',

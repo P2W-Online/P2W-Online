@@ -23,6 +23,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "fonts": [
+      {
+        "asset": "./assets/fonts/PressStart2P-Regular.ttf",
+        "family": "PressStart2P"
+      }
+    ]
   }
 }

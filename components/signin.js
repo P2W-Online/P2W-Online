@@ -57,6 +57,7 @@ export default function SignUp({ navigation }) {
         uid: user.uid,
         email: user.email,
         username: user.username,
+        avatar: 'avatar1',
         score: 0,
       });
   
