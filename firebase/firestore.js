@@ -99,7 +99,19 @@ export const claimFreeLootbox = async (userId, userData, date) => {
     console.error('Error claiming free lootbox:', error);
     throw error;
   }
-
+  return("success") 
+}
+export const claimFreeSuperLootbox = async (userId, userData, date) => {
+  try {
+    const userRef = doc(firebase_db, 'users', userId);
+    await updateDoc(userRef, {
+      freeSuperLootboxTimer: date
+    });
+    await buyLootBox(userId, userData, 'rareBox', 1, userData.coins)
+  } catch (error) {
+    console.error('Error claiming free lootbox:', error);
+    throw error;
+  }
   return("success") 
 }
 
