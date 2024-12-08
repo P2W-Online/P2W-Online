@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginBottom: 5,
     textShadowColor: '#000000', 
-    textShadowOffset: { width: -4, height: 2 }, 
+    textShadowOffset: { width: 4, height: 2 }, 
     textShadowRadius: 1,
     marginTop: 50, 
   
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     textShadowColor: '#000000', 
-    textShadowOffset: { width: -4, height: 2 }, 
+    textShadowOffset: { width: 4, height: 2 }, 
     textShadowRadius: 1,
     marginTop: 10,
     marginBottom:5
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textShadowColor: '#000000', 
-    textShadowOffset: { width: -2, height: 2 }, 
+    textShadowOffset: { width: 2, height: 2 }, 
     textShadowRadius: 1, 
   },
 

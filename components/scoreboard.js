@@ -137,7 +137,7 @@ const Scoreboard = () => {
               return (
                 <View key={index} style={styles.scoreRow}>
                   <LinearGradient
-                    colors={['#32CD32', '#28A428']}
+                    colors={['#28A428','#32CD32']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={[styles.scoreCard, styles.bubbleEffect]}
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffffff',
     textShadowColor: '#000000',
-    textShadowOffset: { width: -2, height: 2 },
+    textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     marginBottom: 20,
     borderBottomWidth: 1,
@@ -258,11 +258,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 5,
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
   },
   playerScore: {
     color: '#FFFFFF',
     fontSize: 24,
     fontWeight: 'bold',
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
   },
   medalIcon: {
     width: 34,
@@ -279,11 +285,11 @@ const styles = StyleSheet.create({
   },
   headerText: {
     flex: 1,
-    color: '#000',
+    color: '#FFFFFF',
     fontSize: 24,
     fontWeight: 'bold',
-    textShadowColor: '#FFFFFF',
-    textShadowOffset: { width: 1, height: 1 },
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     textAlign: 'left',
   },
