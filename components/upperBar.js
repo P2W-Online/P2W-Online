@@ -176,6 +176,8 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 20,
+    width: 150,
+    height: 40,
   },
   icon: {
     width: 30,
@@ -183,14 +185,15 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   scoreTextContainer: {
-    backgroundColor: '#FFD700',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 15,
+    textShadowColor: '#000000',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 1,
   },
   scoreText: {
     color: '#ffffff',
-    fontWeight: 'bold',
     fontSize: 16,
     textShadowColor: '#000', 
     textShadowOffset: { width: 1, height: 1 }, 

@@ -41,9 +41,9 @@ const Scoreboard = () => {
   const podiumPlayers = users.slice(0, 3);
 
   const podiumColors = [
-    ['#FFD700', '#DAA520'], // Gold
-    ['#87CEEB', '#4682B4'], // Silver
-    ['#CD7F32', '#8B4513'], // Bronze
+    ['#DAA520', '#FFD700'], // Gold
+    ['#4682B4', '#87CEEB'], // Silver
+    ['#8B4513', '#CD7F32'], // Bronze
   ];
 
   const renderPodiumPlayer = (playerIndex, position) => {

@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
-import { View, Text, Button, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, Button, TouchableOpacity, StyleSheet, Image, Alert, useEffect } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'
+import { Audio } from 'expo-av';
 import { Badge } from 'react-native-paper';
 import UpperBar from './upperBar.js';
 import { AuthContext } from '../context/authContext/authContext.js';
@@ -30,15 +31,36 @@ const BOX_PRICES = {
 
 export default function BoxShop({ navigation }) {
     const { userLoggedIn, currentUser, userData, setUserData } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
+    const [sound, setSound] = useState(null);
+    
     if (!userLoggedIn) {
         navigation.navigate('Main');
     }
+
+    // Ladataan ja toistetaan ääni, kun painetaan nappia ja vapautetaan lopuksi. 
+    const playSound = async () => {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../assets/coins.mp3') 
+        );
+        setSound(sound);
+        await sound.playAsync(); 
+      };
+    
+      React.useEffect(() => {
+        return sound
+          ? () => {
+              sound.unloadAsync(); 
+            }
+          : undefined;
+      }, [sound]);
+
     const buy = async (box, amount, price) => {
         //console.log(userData)
         if (price > userData.coins) {
             console.log("Ei rahaa")
         } else {
             let newCoinsValue = userData.coins - price
+            await playSound();
             //const buy = buyLootBox(currentUser.uid, userData, box, amount, newCoinsValue)
             const osto = await buyLootBox(currentUser.uid, userData, box, amount, newCoinsValue)
             console.log(osto)
@@ -53,6 +75,7 @@ export default function BoxShop({ navigation }) {
     const freeBox = async () => {
         // Asetetaan 24h cooldown ilmaiselle lootboxille
         await claimFreeLootbox(currentUser.uid, userData, (Date.now() + 86400000))
+        await playSound();
         const uData = await getUserData(currentUser.uid)
         setUserData({ ...uData })
     }
