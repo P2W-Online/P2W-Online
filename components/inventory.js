@@ -174,6 +174,7 @@ export default function Inventory({ navigation }) {
                 />
             </View>
 
+            <Text style={styles.title}>Inventory</Text>
             <View style={styles.separatorContainer}>
                 <View style={styles.separator}></View>
                 <Text style={styles.separatorText}>Your Boxes</Text>
@@ -262,6 +263,19 @@ const styles = StyleSheet.create({
         flex: 1,
         overflow: 'hidden',
     },
+    title: {
+        fontSize: 38,
+        fontWeight: 'bold',
+        color: '#ffffff',
+        textShadowColor: '#000000',
+        textShadowOffset: { width: -2, height: 2 },
+        textShadowRadius: 1,
+        borderColor: '#fafafa',
+        width: '100%', 
+        textAlign: 'center', 
+        marginTop: 10
+      },
+
     boxCard: {
         margin: 20,
         padding: 15,
@@ -420,7 +434,7 @@ separatorContainer: {
   width: '100%',
   flexDirection: 'row',
   alignItems: 'center',
-  marginTop: 40
+  marginTop: 10
 },
 separator: {
   height: 1,
