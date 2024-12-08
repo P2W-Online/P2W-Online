@@ -4,22 +4,37 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { onSnapshot, doc } from 'firebase/firestore';
 import { firebase_db } from '../firebase/firebase';
 import { doSignOut } from '../firebase/auth';
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation } from '@react-navigation/native';
+
+// Define profile pictures mapping
+const profilePictures = {
+  avatar1: require('../assets/avatars/avatar1.png'),
+  avatar2: require('../assets/avatars/avatar2.png'),
+  avatar3: require('../assets/avatars/avatar3.png'),
+  avatar4: require('../assets/avatars/avatar4.png'),
+  avatar5: require('../assets/avatars/avatar5.png'),
+  avatar6: require('../assets/avatars/avatar6.png'),
+};
 
 export default function UpperBar({ userId, onSettingsPress, title }) {
   const [points, setPoints] = useState(0);
   const [coins, setCoins] = useState(0);
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const navigation = useNavigation(); 
+  const [userAvatar, setUserAvatar] = useState('avatar1'); // Default avatar
+  const navigation = useNavigation();
 
-  //Haetaan käyttäjän pisteet firestoresta.
+  // Combined useEffect for fetching user data
   useEffect(() => {
+    if (!userId) return;
+
     const unsubscribe = onSnapshot(
       doc(firebase_db, 'users', userId),
       (docSnapshot) => {
         if (docSnapshot.exists()) {
           const userData = docSnapshot.data();
-          setPoints(userData?.score || 0); 
+          setPoints(userData?.score || 0);
+          setCoins(userData?.coins || 0);
+          setUserAvatar(userData?.avatar || 'avatar1'); // Get user's avatar
         } else {
           console.error('User document does not exist!');
         }
@@ -29,7 +44,7 @@ export default function UpperBar({ userId, onSettingsPress, title }) {
       }
     );
 
-    return unsubscribe; 
+    return unsubscribe;
   }, [userId]);
 
    //Haetaan käyttäjän kolikot firestoresta.
@@ -74,14 +89,17 @@ export default function UpperBar({ userId, onSettingsPress, title }) {
     <View style={styles.headerContainer}>
     {/* Pelaajan pisteet */}
     <LinearGradient
-      colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']} 
-      style={styles.scoreContainer} 
-    >
-      <Image source={require('../assets/pfp.png')} style={styles.icon} />
-      <View style={styles.scoreTextContainer}>
-        <Text style={styles.scoreText}>{points.toLocaleString()}</Text>
-      </View>
-    </LinearGradient>
+        colors={['rgba(0,0,0,0.5)', 'rgba(0,0,0,0.3)']}
+        style={styles.scoreContainer}
+      >
+        <Image 
+          source={profilePictures[userAvatar] || profilePictures.avatar1}
+          style={styles.profileIcon}
+        />
+        <View style={styles.scoreTextContainer}>
+          <Text style={styles.scoreText}>{points.toLocaleString()}</Text>
+        </View>
+      </LinearGradient>
 
     {/* Pelaajan kolikot */}
     <LinearGradient
@@ -262,6 +280,14 @@ coinsContainer: {
   borderRadius: 20,
   width: 150,
   height: 40,
+},
+profileIcon: {
+  width: 35,
+  height: 35,
+  marginRight: 5,
+  borderRadius: 17.5, // Makes the image circular
+  borderWidth: 2,
+  borderColor: '#FFD700',
 },
 
 });

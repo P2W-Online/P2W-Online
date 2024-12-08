@@ -7,6 +7,7 @@ import { AuthContext } from '../context/authContext/authContext';
 import { getUserData } from '../firebase/firestore.js';
 import { MotiView } from 'moti';
 import UpperBar from './upperBar';
+import { useFonts } from 'expo-font';
 
 const BOX_TYPES = {
   commonBox: {
@@ -156,7 +157,7 @@ export default function Inventory({ navigation }) {
             // Close the modal after showing the reward
             setTimeout(() => {
                 setOpeningStage('');
-            }, 7000);
+            }, 5000);
         } catch (error) {
             console.error('Box opening failed:', error);
             setOpeningStage('');
@@ -302,6 +303,7 @@ const styles = StyleSheet.create({
         textShadowColor: '#000',
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 3,
+        fontFamily: 'Nabla-Regular',
     },
     boxCount: {
         color: 'white',
@@ -310,6 +312,7 @@ const styles = StyleSheet.create({
         textShadowColor: '#000',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
+        fontFamily: 'Nabla-Regular',
     },
     pointsRange: {
         color: '#FFD700',
@@ -318,6 +321,7 @@ const styles = StyleSheet.create({
         textShadowColor: '#000',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
+        fontFamily: 'Nabla-Regular',
     },
     openButton: {
         marginTop: 15,
@@ -337,6 +341,7 @@ const styles = StyleSheet.create({
         textShadowColor: '#000',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
+        fontFamily: 'Nabla-Regular',
     },
     disabledButton: {
         opacity: 0.5,
@@ -362,6 +367,7 @@ const styles = StyleSheet.create({
         textShadowColor: '#000',
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 3,
+        fontFamily: 'Nabla-Regular',
     },
     tickerContainer: {
         flexDirection: 'row',
@@ -377,6 +383,7 @@ const styles = StyleSheet.create({
       padding: 30,
   },
   openingText: {
+    fontFamily: 'Nabla-Regular',
       color: '#FFD700',
       fontSize: 36,
       fontWeight: 'bold',
@@ -404,6 +411,7 @@ const styles = StyleSheet.create({
   rewardTitle: {
       color: '#FFD700',
       fontSize: 32,
+      fontFamily: 'Nabla-Regular',
       fontWeight: 'bold',
       marginBottom: 20,
       textShadowColor: '#000',
@@ -442,6 +450,7 @@ separator: {
   backgroundColor: '#dcb5b9'
 },
 separatorText: {
+    fontFamily: 'Nabla-Regular',
   color: 'white',
   fontWeight: 'bold',
   marginLeft: 5,

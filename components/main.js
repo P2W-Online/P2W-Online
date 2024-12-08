@@ -4,10 +4,20 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { AuthContext } from '../context/authContext/authContext.js';
 import { doSignOut } from '../firebase/auth';
 import UpperBar from './upperBar.js';
+import { useFonts } from 'expo-font';
 
 
 export default function Header({ navigation }) {
-  const { userLoggedIn, currentUser } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
+  const { userLoggedIn, currentUser, userData } = useContext(AuthContext) // Haetaan käyttäjän kirjautumistiedot contextista.
+
+  const [fontsLoaded] = useFonts({
+    'Nabla-Regular': require('../assets/Nabla-Regular.ttf'),
+  });
+
+  // Add loading check
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const logout = async () => {
     try {
@@ -98,7 +108,7 @@ export default function Header({ navigation }) {
             {/* User email display with styling */}
             <View style={emailContainerStyle}>
               <Text style={emailTextStyle}>
-                Welcome: {currentUser?.email}
+                Welcome! {userData?.username}
               </Text>
             </View>
 
@@ -200,14 +210,15 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 32,
+    fontFamily: 'Nabla-Regular',
+    fontSize: 50,
     fontWeight: 'bold',
     color: '#ffffff',
-    marginBottom: 40,
+    marginBottom: 0,
     textShadowColor: '#000000',
     textShadowOffset: { width: 4, height: 2 },
     textShadowRadius: 1,
-    marginTop: 100, 
+    marginTop: 90, 
   },
 
   buttonContainer: {
@@ -229,8 +240,9 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
+    fontFamily: 'Nabla-Regular',
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
     textShadowColor: '#000000',
     textShadowOffset: { width: 2, height: 2 },

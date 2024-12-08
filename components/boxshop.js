@@ -495,6 +495,7 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 1,
         maxWidth: '50%',
+        fontFamily: 'Nabla-Regular',
     },
     chest1Image: {
         width: 50,
@@ -533,6 +534,7 @@ const styles = StyleSheet.create({
         textShadowColor: '#000000',
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 1,
+        
     },
     freeLootBox1Badge: {
         position: 'absolute',
@@ -558,6 +560,7 @@ const styles = StyleSheet.create({
         textShadowColor: '#000000',
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 1,
+        fontFamily: 'Nabla-Regular',
     },
     lootBoxCardsContainer: {
         //flex: 1,
@@ -591,6 +594,7 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 1,
         marginTop: 5,
+        fontFamily: 'Nabla-Regular',
     },
     buyButton: {
         width: '80%'
