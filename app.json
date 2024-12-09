@@ -26,8 +26,8 @@
     },
     "fonts": [
       {
-        "asset": "./assets/fonts/PressStart2P-Regular.ttf",
-        "family": "PressStart2P"
+        "asset": "./assets/Nabla-Regular.ttf",
+        "family": "Nabla-Regular"
       }
     ]
   }
