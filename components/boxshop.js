@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
     freeLootBoxText: {
         color: '#ffffff',
         fontSize: 24,
-        fontWeight: 'bold',
+        //fontWeight: 'bold',
         textShadowColor: '#000000',
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 1,
@@ -553,7 +553,7 @@ const styles = StyleSheet.create({
     },
     separatorText: {
         color: 'white',
-        fontWeight: 'bold',
+        //fontWeight: 'bold',
         marginLeft: 5,
         marginRight: 5,
         fontSize: 18,
@@ -594,7 +594,6 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 1,
         marginTop: 5,
-        fontFamily: 'Nabla-Regular',
     },
     buyButton: {
         width: '80%'

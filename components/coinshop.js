@@ -338,13 +338,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     height: 65,
     width: '65%',
-    top: 40,
+    top: 35,
 
   },
   coinShopTitle: {
     fontFamily: 'Nabla-Regular',
     fontSize: 32,
-    fontWeight: 'bold',
+    //fontWeight: 'bold',
     color: '#ffffff',
     marginBottom: 5,
     textShadowColor: '#000000',
