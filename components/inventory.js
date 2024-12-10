@@ -26,7 +26,7 @@ const BOX_TYPES = {
   },
   legendaryBox: {
       minPoints: 250,
-      maxPoints: 10001,
+      maxPoints: 10000,
       name: 'Legendary Box',
       image: require('../assets/chest2.png'),
       colors: ['#8B0000', '#FF0000'] // Red theme
@@ -45,7 +45,7 @@ function TickerList({ number, fontSize, index, reset }) {
         <View style={{ height: fontSize, overflow: "hidden" }}>
             <MotiView
                 animate={{
-                    translateY: -fontSize * 1.105 * (reset ? number : number + 40),
+                    translateY: -fontSize * 1.05 * (reset ? number : number + 40),
                 }}
                 transition={{
                     delay: (5 - index) * _stagger,
@@ -58,7 +58,7 @@ function TickerList({ number, fontSize, index, reset }) {
                         key={`number-${num}-${i}`}
                         style={{
                             fontSize: fontSize,
-                            lineHeight: fontSize * 1.105,
+                            lineHeight: fontSize * 1.05,
                             fontWeight: "900",
                             fontVariant: ["tabular-nums"],
                             color: reset ? '#FFD700' : '#FFFFFF',
@@ -134,7 +134,7 @@ export default function Inventory({ navigation }) {
                 ...userData.inventory,
                 [boxType]: userData.inventory[boxType] - 1,
             };
-            console.log(newInventory)
+            //console.log(newInventory)
 
             const newScore = userData.score + pointsWon;
 
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 38,
-        fontWeight: 'bold',
+        //fontWeight: 'bold',
         color: '#ffffff',
         textShadowColor: '#000000',
         textShadowOffset: { width: -2, height: 2 },
@@ -274,7 +274,8 @@ const styles = StyleSheet.create({
         borderColor: '#fafafa',
         width: '100%', 
         textAlign: 'center', 
-        marginTop: 10
+        marginTop: 10,
+        fontFamily: 'Nabla-Regular',
       },
 
     boxCard: {
@@ -343,7 +344,7 @@ const styles = StyleSheet.create({
         textShadowColor: '#000',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
-        fontFamily: 'Nabla-Regular',
+        //fontFamily: 'Nabla-Regular',
     },
     disabledButton: {
         opacity: 0.5,
@@ -364,7 +365,7 @@ const styles = StyleSheet.create({
     rewardTitle: {
         color: '#FFD700',
         fontSize: 32,
-        fontWeight: 'bold',
+        //fontWeight: 'bold',
         marginBottom: 20,
         textShadowColor: '#000',
         textShadowOffset: { width: 2, height: 2 },
@@ -388,7 +389,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Nabla-Regular',
       color: '#FFD700',
       fontSize: 36,
-      fontWeight: 'bold',
+      //fontWeight: 'bold',
       textShadowColor: '#000',
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 3,
@@ -413,7 +414,7 @@ const styles = StyleSheet.create({
   rewardTitle: {
       color: '#FFD700',
       fontSize: 32,
-      fontFamily: 'Nabla-Regular',
+      //fontFamily: 'Nabla-Regular',
       fontWeight: 'bold',
       marginBottom: 20,
       textShadowColor: '#000',
@@ -452,9 +453,9 @@ separator: {
   backgroundColor: '#dcb5b9'
 },
 separatorText: {
-    fontFamily: 'Nabla-Regular',
+  fontFamily: 'Nabla-Regular',
   color: 'white',
-  fontWeight: 'bold',
+  //fontWeight: 'bold',
   marginLeft: 5,
   marginRight: 5,
   fontSize: 18,

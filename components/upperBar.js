@@ -129,6 +129,13 @@ export default function UpperBar({ userId, onSettingsPress, title }) {
 
       <TouchableOpacity
         style={styles.dropdownItem}
+        onPress={() => navigation.navigate('Main')}
+      >
+        <Text style={styles.dropdownText}>Menu</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.dropdownItem}
         onPress={() => navigation.navigate('Scoreboard')}
       >
         <Text style={styles.dropdownText}>Scoreboard</Text>
