@@ -46,11 +46,11 @@ export const updateUserScore = async (userId, newScore) => {
 };
 
 export const getUserData = async (userId) => {
-  console.log("Haetaan käyttäjän data...", userId)
+  //console.log("Haetaan käyttäjän data...", userId)
   const docRef = doc(firebase_db, "users", userId);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data());
+    //console.log("Document data:", docSnap.data());
     return docSnap.data()
   } else {
     // docSnap.data() will be undefined in this case

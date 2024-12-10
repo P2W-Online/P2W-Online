@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 38,
-    fontWeight: 'bold',
+    //fontWeight: 'bold',
     color: '#ffffff',
     textShadowColor: '#000000',
     textShadowOffset: { width: 2, height: 2 },

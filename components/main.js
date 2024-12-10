@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Nabla-Regular',
     fontSize: 50,
-    fontWeight: 'bold',
+    //fontWeight: 'bold',
     color: '#ffffff',
     marginBottom: 0,
     textShadowColor: '#000000',
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Nabla-Regular',
     color: '#ffffff',
     fontSize: 22,
-    fontWeight: 'bold',
+    //fontWeight: 'bold',
     textShadowColor: '#000000',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,

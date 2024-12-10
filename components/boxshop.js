@@ -438,6 +438,7 @@ export default function BoxShop({ navigation }) {
                         colors={['rgba(0,0,0,0.9)', 'rgba(0,0,0,0.95)']}
                         style={styles.modalContent}
                     >
+                        <Text style={{color:'white', fontSize:36, fontWeight:'bold'}}>Buy Coins!</Text>
                         <View style={styles.adContainer}>
                             <View style={{
                                 flex: 2,
@@ -635,7 +636,7 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         width: '80%',
-        height: '80%',
+        height: '70%',
         padding: 30,
         borderRadius: 20,
         alignItems: 'center',
@@ -644,7 +645,7 @@ const styles = StyleSheet.create({
     },
     adContainer: {
         //color: '#FFD700',
-        color: 'white',
+        flex: 1,
         fontSize: 32,
         fontWeight: 'bold',
         marginBottom: 20,
@@ -670,8 +671,8 @@ const styles = StyleSheet.create({
         width: 40,
         alignSelf: 'flex-end',
         marginBottom: 25,
-        marginRight: -40,
-        marginLeft: -20,
+        marginRight: -60,
+        marginLeft: -50,
     },
     adItemInfoText: {
         color: '#ffffff',
@@ -693,7 +694,7 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 1,
     },
-    adItemInfoContainer: {
+    adItemPriceContainer: {
         flex: 1,
         borderRadius: 55,
         justifyContent: 'center',
